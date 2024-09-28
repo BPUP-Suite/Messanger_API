@@ -3,3 +3,5 @@
 db.db
 database
 /data/
+/logs/
+test.py
