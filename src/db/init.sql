@@ -5,223 +5,315 @@
 -- 001 000 000 000 000 000 000 000 000 000 000 // message
 -- 010 000 000 000 000 000 000 000 000 000 000 // files
 
-CREATE DATABASE "BPUP_DB"
-    WITH
-    OWNER = bpup
-    ENCODING = 'UTF8'
-    LC_COLLATE = 'en_US.utf8'
-    LC_CTYPE = 'en_US.utf8'
-    LOCALE_PROVIDER = 'libc'
-    TABLESPACE = pg_default
-    CONNECTION LIMIT = -1
-    IS_TEMPLATE = False;
+--
+-- PostgreSQL database dump
+--
 
+-- Dumped from database version 16.4 (Debian 16.4-1.pgdg120+1)
+-- Dumped by pg_dump version 16.4 (Debian 16.4-1.pgdg120+1)
 
-BEGIN;
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
 
+SET default_tablespace = '';
 
-CREATE TABLE IF NOT EXISTS public.channels
-(
-    chat_id text COLLATE pg_catalog."default" NOT NULL,
-    pinned_messages text[] COLLATE pg_catalog."default",
-    members text[] COLLATE pg_catalog."default" NOT NULL,
-    admins text[] COLLATE pg_catalog."default" NOT NULL,
-    description text COLLATE pg_catalog."default",
-    group_picture_id text[] COLLATE pg_catalog."default",
-    theme text COLLATE pg_catalog."default",
-    CONSTRAINT channels_pkey PRIMARY KEY (chat_id)
+SET default_table_access_method = heap;
+
+--
+-- Name: channels; Type: TABLE; Schema: public; Owner: bpup
+--
+
+CREATE TABLE public.channels (
+    chat_id text NOT NULL,
+    pinned_messages text[],
+    members text[] NOT NULL,
+    admins text[] NOT NULL,
+    description text,
+    group_picture_id text[],
+    theme text
 );
 
-CREATE TABLE IF NOT EXISTS public.chats
-(
-    chat_id text COLLATE pg_catalog."default" NOT NULL,
-    pinned_messages text[] COLLATE pg_catalog."default",
-    CONSTRAINT chats_pkey PRIMARY KEY (chat_id)
+
+ALTER TABLE public.channels OWNER TO bpup;
+
+--
+-- Name: chats; Type: TABLE; Schema: public; Owner: bpup
+--
+
+CREATE TABLE public.chats (
+    chat_id text NOT NULL,
+    pinned_messages text[]
 );
 
-CREATE TABLE IF NOT EXISTS public.files
-(
-    files_id text COLLATE pg_catalog."default" NOT NULL,
-    file_path text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT files_pkey PRIMARY KEY (files_id)
+
+ALTER TABLE public.chats OWNER TO bpup;
+
+--
+-- Name: files; Type: TABLE; Schema: public; Owner: bpup
+--
+
+CREATE TABLE public.files (
+    files_id text NOT NULL,
+    file_path text NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS public.groups
-(
-    chat_id text COLLATE pg_catalog."default" NOT NULL,
-    pinned_messages text[] COLLATE pg_catalog."default",
-    members text[] COLLATE pg_catalog."default" NOT NULL,
-    admins text[] COLLATE pg_catalog."default" NOT NULL,
-    description text COLLATE pg_catalog."default",
-    group_picture_id text[] COLLATE pg_catalog."default",
-    CONSTRAINT groups_pkey PRIMARY KEY (chat_id)
+
+ALTER TABLE public.files OWNER TO bpup;
+
+--
+-- Name: groups; Type: TABLE; Schema: public; Owner: bpup
+--
+
+CREATE TABLE public.groups (
+    chat_id text NOT NULL,
+    pinned_messages text[],
+    members text[] NOT NULL,
+    admins text[] NOT NULL,
+    description text,
+    group_picture_id text[]
 );
 
-CREATE TABLE IF NOT EXISTS public.handles
-(
-    id text COLLATE pg_catalog."default" NOT NULL,
-    handle text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT handles_pkey PRIMARY KEY (id)
+
+ALTER TABLE public.groups OWNER TO bpup;
+
+--
+-- Name: handles; Type: TABLE; Schema: public; Owner: bpup
+--
+
+CREATE TABLE public.handles (
+    id text NOT NULL,
+    handle text NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS public.messages
-(
-    message_id text COLLATE pg_catalog."default" NOT NULL,
-    chat_id text COLLATE pg_catalog."default" NOT NULL,
-    text text COLLATE pg_catalog."default" NOT NULL,
-    sender text COLLATE pg_catalog."default" NOT NULL,
+
+ALTER TABLE public.handles OWNER TO bpup;
+
+--
+-- Name: messages; Type: TABLE; Schema: public; Owner: bpup
+--
+
+CREATE TABLE public.messages (
+    message_id text NOT NULL,
+    chat_id text NOT NULL,
+    text text NOT NULL,
+    sender text NOT NULL,
     date timestamp without time zone NOT NULL,
-    forward_message_id text COLLATE pg_catalog."default",
-    file_id text COLLATE pg_catalog."default",
-    file_type text COLLATE pg_catalog."default",
-    CONSTRAINT messages_pkey PRIMARY KEY (message_id)
+    forward_message_id text,
+    file_id text,
+    file_type text
 );
 
-CREATE TABLE IF NOT EXISTS public.notification
-(
-    user_id text COLLATE pg_catalog."default" NOT NULL,
-    chat_id text COLLATE pg_catalog."default" NOT NULL,
-    disable boolean NOT NULL DEFAULT false,
-    CONSTRAINT notification_pkey PRIMARY KEY (user_id, chat_id)
-);
 
-CREATE TABLE IF NOT EXISTS public.users
-(
-    user_id text COLLATE pg_catalog."default" NOT NULL,
-    username text COLLATE pg_catalog."default" NOT NULL,
-    description text COLLATE pg_catalog."default",
-    profile_picture_id text[] COLLATE pg_catalog."default",
-    phone_number text COLLATE pg_catalog."default",
-    email text COLLATE pg_catalog."default" NOT NULL,
-    birthday date,
-    theme text COLLATE pg_catalog."default",
-    last_access timestamp without time zone,
-    CONSTRAINT users_pkey PRIMARY KEY (user_id)
-);
+ALTER TABLE public.messages OWNER TO bpup;
 
-CREATE TABLE IF NOT EXISTS public.api_key
-(
+--
+-- Name: notification; Type: TABLE; Schema: public; Owner: bpup
+--
+
+CREATE TABLE public.notification (
     user_id text NOT NULL,
-    api_key text NOT NULL,
-    PRIMARY KEY (user_id),
-    CONSTRAINT api_key UNIQUE (api_key)
+    chat_id text NOT NULL,
+    disable boolean DEFAULT false NOT NULL
 );
 
-ALTER TABLE IF EXISTS public.handles
-    ADD CONSTRAINT channel_id FOREIGN KEY (id)
-    REFERENCES public.channels (chat_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-CREATE INDEX IF NOT EXISTS handles_pkey
-    ON public.handles(id);
+
+ALTER TABLE public.notification OWNER TO bpup;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: bpup
+--
+
+CREATE TABLE public.users (
+    user_id text NOT NULL,
+    username text NOT NULL,
+    description text,
+    profile_picture_id text[],
+    phone_number text NOT NULL,
+    birthday date,
+    theme text,
+    last_access timestamp without time zone
+);
 
 
-ALTER TABLE IF EXISTS public.handles
-    ADD CONSTRAINT group_id FOREIGN KEY (id)
-    REFERENCES public.groups (chat_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-CREATE INDEX IF NOT EXISTS handles_pkey
-    ON public.handles(id);
+ALTER TABLE public.users OWNER TO bpup;
+
+--
+-- Name: channels channels_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY public.channels
+    ADD CONSTRAINT channels_pkey PRIMARY KEY (chat_id);
 
 
-ALTER TABLE IF EXISTS public.handles
-    ADD CONSTRAINT user_id FOREIGN KEY (id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-CREATE INDEX IF NOT EXISTS handles_pkey
-    ON public.handles(id);
+--
+-- Name: chats chats_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.chats
+    ADD CONSTRAINT chats_pkey PRIMARY KEY (chat_id);
 
 
-ALTER TABLE IF EXISTS public.messages
-    ADD CONSTRAINT channel_id FOREIGN KEY (chat_id)
-    REFERENCES public.groups (chat_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: files files_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.files
+    ADD CONSTRAINT files_pkey PRIMARY KEY (files_id);
 
 
-ALTER TABLE IF EXISTS public.messages
-    ADD CONSTRAINT chat_id FOREIGN KEY (chat_id)
-    REFERENCES public.chats (chat_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: groups groups_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.groups
+    ADD CONSTRAINT groups_pkey PRIMARY KEY (chat_id);
 
 
-ALTER TABLE IF EXISTS public.messages
-    ADD CONSTRAINT file_id FOREIGN KEY (file_id)
-    REFERENCES public.files (files_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: handles handles_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.handles
+    ADD CONSTRAINT handles_pkey PRIMARY KEY (id);
 
 
-ALTER TABLE IF EXISTS public.messages
-    ADD CONSTRAINT forward_message_id FOREIGN KEY (forward_message_id)
-    REFERENCES public.messages (message_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT messages_pkey PRIMARY KEY (message_id);
 
 
-ALTER TABLE IF EXISTS public.messages
-    ADD CONSTRAINT group_id FOREIGN KEY (chat_id)
-    REFERENCES public.groups (chat_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: notification notification_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.notification
+    ADD CONSTRAINT notification_pkey PRIMARY KEY (user_id, chat_id);
 
 
-ALTER TABLE IF EXISTS public.messages
-    ADD CONSTRAINT sender FOREIGN KEY (sender)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
 
 
-ALTER TABLE IF EXISTS public.notification
-    ADD CONSTRAINT channel_id FOREIGN KEY (chat_id)
-    REFERENCES public.channels (chat_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: handles channel_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.handles
+    ADD CONSTRAINT channel_id FOREIGN KEY (id) REFERENCES public.channels(chat_id) NOT VALID;
 
 
-ALTER TABLE IF EXISTS public.notification
-    ADD CONSTRAINT chat_id FOREIGN KEY (chat_id)
-    REFERENCES public.chats (chat_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: messages channel_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT channel_id FOREIGN KEY (chat_id) REFERENCES public.groups(chat_id) NOT VALID;
 
 
-ALTER TABLE IF EXISTS public.notification
-    ADD CONSTRAINT group_id FOREIGN KEY (chat_id)
-    REFERENCES public.groups (chat_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: notification channel_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.notification
+    ADD CONSTRAINT channel_id FOREIGN KEY (chat_id) REFERENCES public.channels(chat_id) NOT VALID;
 
 
-ALTER TABLE IF EXISTS public.notification
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: messages chat_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT chat_id FOREIGN KEY (chat_id) REFERENCES public.chats(chat_id) NOT VALID;
 
 
-ALTER TABLE IF EXISTS public.api_key
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
+--
+-- Name: notification chat_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
 
-END;
+ALTER TABLE ONLY public.notification
+    ADD CONSTRAINT chat_id FOREIGN KEY (chat_id) REFERENCES public.chats(chat_id) NOT VALID;
+
+
+--
+-- Name: messages file_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT file_id FOREIGN KEY (file_id) REFERENCES public.files(files_id) NOT VALID;
+
+
+--
+-- Name: messages forward_message_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT forward_message_id FOREIGN KEY (forward_message_id) REFERENCES public.messages(message_id) NOT VALID;
+
+
+--
+-- Name: handles group_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.handles
+    ADD CONSTRAINT group_id FOREIGN KEY (id) REFERENCES public.groups(chat_id) NOT VALID;
+
+
+--
+-- Name: messages group_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT group_id FOREIGN KEY (chat_id) REFERENCES public.groups(chat_id) NOT VALID;
+
+
+--
+-- Name: notification group_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.notification
+    ADD CONSTRAINT group_id FOREIGN KEY (chat_id) REFERENCES public.groups(chat_id) NOT VALID;
+
+
+--
+-- Name: messages sender; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT sender FOREIGN KEY (sender) REFERENCES public.users(user_id) NOT VALID;
+
+
+--
+-- Name: handles user_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.handles
+    ADD CONSTRAINT user_id FOREIGN KEY (id) REFERENCES public.users(user_id) NOT VALID;
+
+
+--
+-- Name: notification user_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
+--
+
+ALTER TABLE ONLY public.notification
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(user_id) NOT VALID;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

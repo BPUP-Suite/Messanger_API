@@ -1,16 +1,24 @@
-import psycog
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 import security.envManager as envManager
 
+POSTGRESQL_DB = envManager.read_postgresql_db()
+POSTGRESQL_USER = envManager.read_postgresql_user()
 POSTGRESQL_PASSWORD = envManager.read_postgresql_password()
+POSTGRESQL_HOST = envManager.read_postgresql_host()
+POSTGRESQL_PORT = envManager.read_postgresql_port()
 
-conn = psycog.connect(dbname="BPUP_DB", user="bpup", password=POSTGRESQL_PASSWORD, host="localhost", port="5432") 
+conn = psycopg2.connect(dbname=POSTGRESQL_DB, user=POSTGRESQL_USER, password=POSTGRESQL_PASSWORD, host=POSTGRESQL_HOST, port=POSTGRESQL_PORT) 
 
 def init(): # init del database
 
     cursor = conn.cursor()
 
     POSTGRESQL_INIT_SCRIPT = envManager.read_postgresql_init_script()
+
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)     
+
     cursor.execute(POSTGRESQL_INIT_SCRIPT)
 
     conn.commit()

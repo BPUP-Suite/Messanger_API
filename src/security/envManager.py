@@ -1,26 +1,43 @@
 import os
 
-def read_postgresql_password():
+def read_variable(name):
 
-    POSTGRES_PASSWORD = None
+    VARIABLE = None
 
     # search for env variables
+    VARIABLE = os.environ.get(name)
 
-    if len(POSTGRES_PASSWORD) == 0:
-        POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+    if VARIABLE is None:
+        raise ValueError(f'{name} must be provided ( {name} variable)') # se ti parte sta eccezione, mi spiace per te
+    
+    return VARIABLE
 
-    if POSTGRES_PASSWORD is None:
-        raise ('Postgres password must be provided (POSTGRES_PASSWORD variable)') # se ti parte sta eccezione, mi spiace per te
-    return POSTGRES_PASSWORD
+def read_postgresql_db():
+
+    return read_variable("POSTGRES_DB")
+
+def read_postgresql_user():
+
+    return read_variable("POSTGRES_USER")
+
+def read_postgresql_password():
+
+    return read_variable("POSTGRES_PASSWORD")
+
+def read_postgresql_host():
+
+    return read_variable("POSTGRES_HOST")
+
+def read_postgresql_port():
+
+    return read_variable("POSTGRES_PORT")
 
 def read_postgresql_init_script():
 
     POSTGRES_INIT_SCRIPT = None
 
     # search for init.sql files
-
-    if len(POSTGRES_INIT_SCRIPT) == 0:
-        file = os.open("init.sql","r")
+    with open("db/init.sql","r") as file:
         POSTGRES_INIT_SCRIPT = file.read()
 
     if POSTGRES_INIT_SCRIPT is None:

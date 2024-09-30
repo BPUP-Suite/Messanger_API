@@ -4,31 +4,40 @@ services:
     container_name: local_pgdb
     restart: always
     ports:
-      - "5432:5432"
+      - 5432:5432
     env_file:
       - .env
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
     restart: unless-stopped
     ports:
-      - "8888:80"
+      - 8888:80
     env_file:
       - .env
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
+    environment:
+        PGADMIN_CONFIG_PROXY_X_HOST_COUNT: 1
+        PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT: 1
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   api:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
     ports:
-      - "8000:80"
+      - 8000:80
     env_file:
       - .env
     volumes:

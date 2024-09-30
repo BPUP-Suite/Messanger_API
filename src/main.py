@@ -7,6 +7,8 @@ import db.database as database
 
 app = FastAPI()
 
+database.init()
+
 # get /docs for all request documentation
 
 # 
