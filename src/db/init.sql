@@ -32,12 +32,12 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.channels (
-    chat_id text NOT NULL,
+    chat_id bigint NOT NULL,
     pinned_messages text[],
-    members text[] NOT NULL,
-    admins text[] NOT NULL,
+    members bigint[] NOT NULL,
+    admins bigint[] NOT NULL,
     description text,
-    group_picture_id text[],
+    group_picture_id bigint[],
     theme text
 );
 
@@ -49,7 +49,7 @@ ALTER TABLE public.channels OWNER TO bpup;
 --
 
 CREATE TABLE public.chats (
-    chat_id text NOT NULL,
+    chat_id bigint NOT NULL,
     pinned_messages text[]
 );
 
@@ -61,7 +61,7 @@ ALTER TABLE public.chats OWNER TO bpup;
 --
 
 CREATE TABLE public.files (
-    files_id text NOT NULL,
+    files_id bigint NOT NULL,
     file_path text NOT NULL
 );
 
@@ -73,12 +73,12 @@ ALTER TABLE public.files OWNER TO bpup;
 --
 
 CREATE TABLE public.groups (
-    chat_id text NOT NULL,
+    chat_id bigint NOT NULL,
     pinned_messages text[],
-    members text[] NOT NULL,
-    admins text[] NOT NULL,
+    members bigint[] NOT NULL,
+    admins bigint[] NOT NULL,
     description text,
-    group_picture_id text[]
+    group_picture_id bigint[]
 );
 
 
@@ -89,7 +89,9 @@ ALTER TABLE public.groups OWNER TO bpup;
 --
 
 CREATE TABLE public.handles (
-    id text NOT NULL,
+    user_id bigint,
+    group_id bigint,
+    channel_id bigint,
     handle text NOT NULL
 );
 
@@ -101,13 +103,13 @@ ALTER TABLE public.handles OWNER TO bpup;
 --
 
 CREATE TABLE public.messages (
-    message_id text NOT NULL,
-    chat_id text NOT NULL,
+    message_id bigint NOT NULL,
+    chat_id bigint NOT NULL,
     text text NOT NULL,
-    sender text NOT NULL,
+    sender bigint NOT NULL,
     date timestamp without time zone NOT NULL,
-    forward_message_id text,
-    file_id text,
+    forward_message_id bigint,
+    file_id bigint,
     file_type text
 );
 
@@ -119,8 +121,8 @@ ALTER TABLE public.messages OWNER TO bpup;
 --
 
 CREATE TABLE public.notification (
-    user_id text NOT NULL,
-    chat_id text NOT NULL,
+    user_id bigint NOT NULL,
+    chat_id bigint NOT NULL,
     disable boolean DEFAULT false NOT NULL
 );
 
@@ -132,11 +134,14 @@ ALTER TABLE public.notification OWNER TO bpup;
 --
 
 CREATE TABLE public.users (
-    user_id text NOT NULL,
-    username text NOT NULL,
+    user_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1000000000000000000 MINVALUE 1000000000000000000 MAXVALUE 1999999999999999999 CACHE 1 ),
+    email text NOT NULL,
+    name text NOT NULL,
+    surname text NOT NULL,
+    password text NOT NULL,
     description text,
-    profile_picture_id text[],
-    phone_number text NOT NULL,
+    profile_picture_id bigint[],
+    phone_number text,
     birthday date,
     theme text,
     last_access timestamp without time zone
@@ -176,15 +181,6 @@ ALTER TABLE ONLY public.files
 ALTER TABLE ONLY public.groups
     ADD CONSTRAINT groups_pkey PRIMARY KEY (chat_id);
 
-
---
--- Name: handles handles_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.handles
-    ADD CONSTRAINT handles_pkey PRIMARY KEY (id);
-
-
 --
 -- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
 --
@@ -214,7 +210,13 @@ ALTER TABLE ONLY public.users
 --
 
 ALTER TABLE ONLY public.handles
-    ADD CONSTRAINT channel_id FOREIGN KEY (id) REFERENCES public.channels(chat_id) NOT VALID;
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(user_id) NOT VALID;
+
+ALTER TABLE ONLY public.handles
+    ADD CONSTRAINT group_id FOREIGN KEY (group_id) REFERENCES public.groups(chat_id) NOT VALID;
+
+ALTER TABLE ONLY public.handles
+    ADD CONSTRAINT channel_id FOREIGN KEY (channel_id) REFERENCES public.channels(chat_id) NOT VALID;
 
 
 --
@@ -264,15 +266,6 @@ ALTER TABLE ONLY public.messages
 ALTER TABLE ONLY public.messages
     ADD CONSTRAINT forward_message_id FOREIGN KEY (forward_message_id) REFERENCES public.messages(message_id) NOT VALID;
 
-
---
--- Name: handles group_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.handles
-    ADD CONSTRAINT group_id FOREIGN KEY (id) REFERENCES public.groups(chat_id) NOT VALID;
-
-
 --
 -- Name: messages group_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
 --
@@ -295,14 +288,6 @@ ALTER TABLE ONLY public.notification
 
 ALTER TABLE ONLY public.messages
     ADD CONSTRAINT sender FOREIGN KEY (sender) REFERENCES public.users(user_id) NOT VALID;
-
-
---
--- Name: handles user_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.handles
-    ADD CONSTRAINT user_id FOREIGN KEY (id) REFERENCES public.users(user_id) NOT VALID;
 
 
 --

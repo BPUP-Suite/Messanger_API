@@ -3,11 +3,14 @@
 from fastapi import FastAPI, Request
 from security.auth import get_user_handle
 from logger.logger import logAPIRequest 
+
 import db.database as database
+import db.object as object
 
 app = FastAPI()
 
-database.init()
+if not(database.exist()):
+    database.init()
 
 # get /docs for all request documentation
 
@@ -22,11 +25,14 @@ async def main(email:str):
 
 @app.get("/user/action/signup")
 
-async def main(email:str,name:str,surname:str,username:str,handle:str,password:str,confirm_password:str):
+async def main(email:str,name:str,surname:str,handle:str,password:str,confirm_password:str):
 # DA FARE: PASSWORD CRIPTATA NEL DB (che me son dimenticato)
     # no api check needed
 
-    return {"message": email}
+    user = object.User(email,name,surname,handle,password,confirm_password) 
+    confirmation = database.add_user_toDB(user)
+
+    return {"signedUp": confirmation} # ritorna true: registrazione effettuata | false: errore, per qualche motivo (non si sa quale)
 
 @app.get("/user/action/login")
 async def main(email:str):
@@ -40,7 +46,9 @@ async def main(handle:str):
 
     # no api check needed
 
-    return {"message": handle}
+    message = database.check_handle_availability(handle)
+
+    return {"message": message}
 
 @app.get("/hello/{name}")
 async def say_hello(name: str):

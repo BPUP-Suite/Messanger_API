@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+import logger.logger as logger
 import security.envManager as envManager
 
 POSTGRESQL_DB = envManager.read_postgresql_db()
@@ -10,6 +11,18 @@ POSTGRESQL_HOST = envManager.read_postgresql_host()
 POSTGRESQL_PORT = envManager.read_postgresql_port()
 
 conn = psycopg2.connect(dbname=POSTGRESQL_DB, user=POSTGRESQL_USER, password=POSTGRESQL_PASSWORD, host=POSTGRESQL_HOST, port=POSTGRESQL_PORT) 
+
+def exist():
+    
+    cursor = conn.cursor()
+
+    cursor.execute("select exists(select * from information_schema.tables where table_name=%s)", ('users',))
+    bool = cursor.fetchone()[0]
+
+    cursor.close()
+
+    return bool
+
 
 def init(): # init del database
 
@@ -87,3 +100,19 @@ def check_handle_availability(handle):
         return True
     else:
         return False
+    
+def add_user_toDB(user):
+
+    cursor = conn.cursor()
+
+    confirmation = False
+
+    QUERY = f"with new_user as (INSERT INTO users(email,name,surname,password) VALUES('{user.email}','{user.name}','{user.surname}','{user.password}') RETURNING user_id) INSERT INTO handles(user_id,handle) VALUES('SELECT user_id FROM new_user','{user.handle}')"
+
+    if(user.password == user.confirm_password):
+        confirmation = cursor.execute(QUERY)
+        cursor.commit()
+    
+    cursor.close()
+
+    return confirmation
