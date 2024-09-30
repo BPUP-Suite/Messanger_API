@@ -2,9 +2,9 @@ import psycog
 
 import src.security.envManager as envManager
 
-# POSTGRESQL_PASSWORD = envManager.read_postgresql_password()
+POSTGRESQL_PASSWORD = envManager.read_postgresql_password()
 
-# conn = psycog.connect(dbname="BPUP_DB", user="bpup", password=POSTGRESQL_PASSWORD, host="localhost", port="5432") 
+conn = psycog.connect(dbname="BPUP_DB", user="bpup", password=POSTGRESQL_PASSWORD, host="localhost", port="5432") 
 
 def init(): # init del database
 
