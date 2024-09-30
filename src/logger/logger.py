@@ -2,7 +2,7 @@
 
 import datetime
 
-import fileLogger
+import src.logger.fileLogger as fileLogger
 
 def toConsole(text): # print on console
     date = str(datetime.datetime.now())

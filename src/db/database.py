@@ -1,6 +1,6 @@
 import psycog
 
-import envManager
+import src.security.envManager as envManager
 
 # POSTGRESQL_PASSWORD = envManager.read_postgresql_password()
 

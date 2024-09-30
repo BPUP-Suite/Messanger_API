@@ -1,9 +1,9 @@
 # START COMMAND: uvicorn main:app --reload
 
 from fastapi import FastAPI, Request
-from auth import get_user_handle
-from logger import logAPIRequest 
-import database
+from src.security.auth import get_user_handle
+from src.logger.logger import logAPIRequest 
+import src.db.database as database
 
 app = FastAPI()
 

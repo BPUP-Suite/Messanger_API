@@ -22,10 +22,12 @@ services:
       - .env
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
+    depends_on:
+      - db
 
   api:
     build:
-      context: .
+      context: ./docker/Dockerfile
     dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -34,3 +36,18 @@ services:
     volumes:
       - ./data/api/database/files:/files
     restart: unless-stopped
+    depends_on:
+      - db
+  
+  nginx:
+    restart: unless-stopped
+    image: jc21/nginx-proxy-manager:latest
+    ports:
+      - 80:80
+      - 81:81 # admin page
+      - 443:443
+    volumes:
+      - ./nginx/data:/data
+      - ./local:/etc/letsencrypt
+    depends_on:
+      - api

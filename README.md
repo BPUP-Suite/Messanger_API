@@ -4,6 +4,8 @@ API per l`app di messaggistica
 
 Se vuoi usarla ti basta clonare la repo, cambiare il nome a example.env in .env, cambiarne i valori e utilizzare docker-compose per inizializzare il tutto
 
+*Configurazione di Nginx Proxy Manager*
+
 # TODO
 
 - creazione, accesso, modifica del database in python (mi serve la documentazione aiuto)
