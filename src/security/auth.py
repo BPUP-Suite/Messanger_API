@@ -1,6 +1,6 @@
 from fastapi import Security, HTTPException, status
 from fastapi.security import APIKeyHeader
-from src.db.database import check_api_key
+from db.database import check_api_key
 
 # security measures
 

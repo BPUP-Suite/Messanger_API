@@ -1,4 +1,8 @@
-/__pycache__/
 example.env
 README.md
 Dockerfile
+
+../src/__pycache__/
+../src/db/__pycache__/
+../src/logger/__pycache__/
+../src/security/__pycache__/

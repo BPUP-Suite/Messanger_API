@@ -1,6 +1,4 @@
-version: "3.8"
 services:
-
   db:
     image: postgres
     container_name: local_pgdb
@@ -15,7 +13,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
-    restart: always
+    restart: unless-stopped
     ports:
       - "8888:80"
     env_file:
@@ -27,10 +25,10 @@ services:
 
   api:
     build:
-      context: ./docker/Dockerfile
-    dockerfile: Dockerfile
+      context: .
+      dockerfile: ./docker/Dockerfile
     ports:
-      - "8000:8000"
+      - "8000:80"
     env_file:
       - .env
     volumes:
@@ -47,7 +45,7 @@ services:
       - 81:81 # admin page
       - 443:443
     volumes:
-      - ./nginx/data:/data
+      - ./data/nginx:/data
       - ./local:/etc/letsencrypt
     depends_on:
       - api

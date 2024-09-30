@@ -1,6 +1,6 @@
 import psycog
 
-import src.security.envManager as envManager
+import security.envManager as envManager
 
 POSTGRESQL_PASSWORD = envManager.read_postgresql_password()
 
@@ -18,8 +18,6 @@ def init(): # init del database
     cursor.close()
 
 def check_api_key(apy_key):
-
-    return "ok"
 
     user_handle = None
 
@@ -58,3 +56,26 @@ def user_group_channel_fromID_toHandle(id):
     # return only handle of the requested id
 
     return handle
+
+def check_handle_availability(handle):
+
+    cursor = conn.cursor()
+
+    id = None
+
+    QUERY = f"SELECT id FROM handles WHERE handle = {handle}"
+    cursor.execute(QUERY)
+
+    # fetch database for id (it should only be 1)
+
+    result = cursor.fetchone()
+    id = result.get[0]
+
+    cursor.close()
+
+    # true: available | false: used
+
+    if id == None:
+        return True
+    else:
+        return False
