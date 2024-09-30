@@ -34,8 +34,6 @@ def init(): # init del database
 
     cursor.execute(POSTGRESQL_INIT_SCRIPT)
 
-    conn.commit()
-
     cursor.close()
 
 def check_api_key(apy_key):
@@ -107,11 +105,11 @@ def add_user_toDB(user):
 
     confirmation = False
 
-    QUERY = f"with new_user as (INSERT INTO users(email,name,surname,password) VALUES('{user.email}','{user.name}','{user.surname}','{user.password}') RETURNING user_id) INSERT INTO handles(user_id,handle) VALUES('SELECT user_id FROM new_user','{user.handle}')"
-
+    QUERY = f"with new_user as (INSERT INTO public.users(email,name,surname,password) VALUES('{user.email}','{user.name}','{user.surname}','{user.password}') RETURNING user_id) INSERT INTO public.handles(user_id,handle) VALUES((SELECT user_id FROM new_user),'{user.handle}')"
+    logger.toConsole(QUERY)
     if(user.password == user.confirm_password):
         confirmation = cursor.execute(QUERY)
-        cursor.commit()
+        # VEDI COME FUNZIONA COMMIT
     
     cursor.close()
 
