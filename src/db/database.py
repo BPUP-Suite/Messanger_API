@@ -76,40 +76,45 @@ def user_group_channel_fromID_toHandle(id):
 
     return handle
 
-def check_handle_availability(handle):
-
-    cursor = conn.cursor()
-
-    id = None
-
-    QUERY = f"SELECT id FROM handles WHERE handle = {handle}"
-    cursor.execute(QUERY)
-
-    # fetch database for id (it should only be 1)
-
-    result = cursor.fetchone()
-    id = result.get[0]
-
-    cursor.close()
-
-    # true: available | false: used
-
-    if id == None:
-        return True
-    else:
-        return False
-    
-def add_user_toDB(user):
+def check_handle_availability(handle): # done
 
     cursor = conn.cursor()
 
     confirmation = False
 
-    QUERY = f"with new_user as (INSERT INTO public.users(email,name,surname,password) VALUES('{user.email}','{user.name}','{user.surname}','{user.password}') RETURNING user_id) INSERT INTO public.handles(user_id,handle) VALUES((SELECT user_id FROM new_user),'{user.handle}')"
+    QUERY = f"SELECT handle FROM public.handles WHERE handle = '{handle}'"
+
     logger.toConsole(QUERY)
-    if(user.password == user.confirm_password):
-        confirmation = cursor.execute(QUERY)
-        # VEDI COME FUNZIONA COMMIT
+
+    cursor.execute(QUERY)
+
+    # fetch database for handle (it should only be 1)
+    result = cursor.fetchone()
+
+    if result == None:
+        confirmation = True
+    
+    cursor.close()
+
+    # true: available | false: used
+
+    return confirmation
+    
+def add_user_toDB(user): # aggiungi API key
+
+    cursor = conn.cursor()
+
+    confirmation = True
+
+    QUERY = f"with new_user as (INSERT INTO public.users(email,name,surname,password) VALUES('{user.email}','{user.name}','{user.surname}','{user.password}') RETURNING user_id), new_handle AS (INSERT INTO public.handles(user_id,handle) VALUES((SELECT user_id FROM new_user),'{user.handle}')) INSERT INTO public.apiKeys(user_id,api_key) VALUES((SELECT user_id FROM new_user),'{user.api_key}')"
+    logger.toConsole(QUERY)
+    print(user.api_key)
+
+    try:
+        cursor.execute(QUERY)
+        conn.commit()
+    except:
+        confirmation = False
     
     cursor.close()
 

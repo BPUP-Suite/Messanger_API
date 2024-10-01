@@ -43,3 +43,29 @@ def read_postgresql_init_script():
     if POSTGRES_INIT_SCRIPT is None:
         raise ('Postgres init script must be provided (POSTGRES_INIT_SCRIPT variable)') # se ti parte sta eccezione, mi spiace per te pt.2
     return POSTGRES_INIT_SCRIPT
+
+### SALT ###
+
+def read_salt():
+
+    SALT = None
+
+    # search for SALT file
+    try:
+        with open("db/salt","r") as file:
+            SALT = file.read()
+    except:
+        return False
+    
+    if SALT is None:
+        return False
+    
+    return SALT.encode("utf-8") # return bytes
+
+def write_salt(SALT):
+
+    # write SALT file
+    with open("db/salt","w+") as file: # create a file
+        file.write(str(SALT)) # writes a string
+
+### SALT ###

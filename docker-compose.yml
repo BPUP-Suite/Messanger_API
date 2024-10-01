@@ -44,7 +44,8 @@ services:
       - ./data/api/database/files:/files
     restart: unless-stopped
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   
   nginx:
     restart: unless-stopped

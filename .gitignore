@@ -8,4 +8,5 @@ db.db
 database
 /data/
 /logs/
+/src/db/salt
 test.py

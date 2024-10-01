@@ -154,6 +154,18 @@ ALTER TABLE public.users OWNER TO bpup;
 -- Name: channels channels_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
+CREATE TABLE public.apiKeys(
+    user_id bigint NOT NULL,
+    api_key text NOT NULL
+);
+
+
+ALTER TABLE public.apiKeys OWNER TO bpup;
+
+--
+-- Name: channels channels_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
 ALTER TABLE ONLY public.channels
     ADD CONSTRAINT channels_pkey PRIMARY KEY (chat_id);
 
@@ -204,6 +216,9 @@ ALTER TABLE ONLY public.notification
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
 
+
+ALTER TABLE ONLY public.apiKeys
+    ADD CONSTRAINT apiKeys_pkey PRIMARY KEY (api_key);
 
 --
 -- Name: handles channel_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
@@ -297,6 +312,8 @@ ALTER TABLE ONLY public.messages
 ALTER TABLE ONLY public.notification
     ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(user_id) NOT VALID;
 
+ALTER TABLE ONLY public.apiKeys
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(user_id) NOT VALID;
 
 --
 -- PostgreSQL database dump complete
