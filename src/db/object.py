@@ -7,3 +7,7 @@ class User:
     self.api_key = api_key
     self.password = password
 
+class LoginUser:
+  def __init__(self,email,password):
+    self.email = email
+    self.password = password

@@ -23,13 +23,22 @@ async def main(email:str):
 
     # no api check needed
 
-    return {"response":database.check_userExistence_fromEmail(email)}
+    type = "accessType"
+    accessType = "signup"
+
+    if database.check_userExistence_fromEmail(email):
+        accessType = "login"
+
+    logAPIRequest(email,type,accessType)
+
+    return {type: accessType}
 
 
 
 @app.get("/user/action/signup")
 
 async def main(email:str,name:str,surname:str,handle:str,password:str,confirm_password:str):
+
     # no api check needed
 
     type = "signedUp"
@@ -53,7 +62,14 @@ async def main(email:str,password:str):
 
     # no api check needed
 
-    return {"message": email}
+    type = "api_key"
+
+    loginUser = object.LoginUser(email,password) # create LoginUser obj used in databases method (using only email and password)
+
+    api_key = database.user_login_check(loginUser) 
+    # api-key: login approved | false: login failed
+
+    return {type: api_key}
 
 
 

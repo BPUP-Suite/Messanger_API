@@ -3,6 +3,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 import logger.logger as logger
 import security.envManager as envManager
+from security.auth import check_password_hash
 
 POSTGRESQL_DB = envManager.read_postgresql_db()
 POSTGRESQL_USER = envManager.read_postgresql_user()
@@ -62,7 +63,7 @@ def user_group_channel_fromID_toHandle(id):
 
     cursor = conn.cursor()
 
-    QUERY = f"SELECT handle FROM handles WHERE id = {id}"
+    QUERY = f"SELECT handle FROM handles WHERE user_id = '{id}' OR group_id = '{id}' OR channel_id = '{id}'"
     cursor.execute(QUERY)
 
     # fetch database for handle with id
@@ -117,5 +118,71 @@ def add_user_toDB(user): # aggiungi API key
         confirmation = False
     
     cursor.close()
+
+    return confirmation
+
+def check_userExistence_fromEmail(email):
+
+    cursor = conn.cursor()
+
+    confirmation = True
+
+    QUERY = f"SELECT email FROM public.users WHERE email = '{email}'"
+
+    logger.toConsole(QUERY)
+
+    cursor.execute(QUERY)
+
+    # fetch database for e-mails (it should only be 1)
+    result = cursor.fetchone()
+
+    if result == None:
+        confirmation = False
+    
+    cursor.close()
+
+    # true: email already used | false: email not used
+
+    return confirmation
+
+def user_login_check(loginUser):
+
+    email = loginUser.email
+    password = loginUser.password
+
+    cursor = conn.cursor()
+
+    confirmation = False
+
+    # first query, find password
+    QUERY = f"SELECT user_id,password FROM public.users WHERE email = '{email}'" 
+
+    logger.toConsole(QUERY)
+
+    cursor.execute(QUERY)
+
+    # fetch database for password (it should only be 1)
+    result = cursor.fetchone()
+
+    if result != None:
+        hash = result[1] # position 0: id_user | position 1: password_hash
+        if check_password_hash(password,hash):
+            
+            user_id = result[0]
+            # second query, find api key
+            QUERY = f"SELECT api_key FROM public.apiKeys WHERE user_id = '{user_id}'"
+
+            logger.toConsole(QUERY)
+
+            cursor.execute(QUERY)
+
+            # fetch database for apikey (it should only be 1)
+            result = cursor.fetchone()
+
+            confirmation = result[0]
+
+    cursor.close()
+
+    # api-key: login approved | false: login failed
 
     return confirmation

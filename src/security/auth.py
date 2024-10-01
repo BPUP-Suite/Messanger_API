@@ -1,10 +1,10 @@
-from fastapi import Security, HTTPException, status
-from fastapi.security import APIKeyHeader
+from fastapi import HTTPException, status
 import bcrypt # password hash
+
+import importlib # fixed circular import with database.py 
 
 from security.envManager import read_salt
 from security.envManager import write_salt
-from db.database import check_api_key
 
 # security measures
 
@@ -17,7 +17,8 @@ if(not(SALT)):
 
 def get_user_handle(api_key_header):
 
-    handle = check_api_key(api_key_header)
+    check_api_key = importlib.import_module('db.database.check_api_key')
+    handle = check_api_key(api_key_header) 
 
     if handle != None:
         return handle
@@ -36,3 +37,12 @@ def generate_hash(password):
     hash = hash[:-1]
 
     return hash
+
+def check_password_hash(password,hash):
+    
+    confirmation = False
+
+    if generate_hash(password) == hash:
+        confirmation = True
+
+    return confirmation
