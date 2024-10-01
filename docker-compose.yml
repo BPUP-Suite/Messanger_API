@@ -56,6 +56,6 @@ services:
       - 443:443
     volumes:
       - ./data/nginx:/data
-      - ./local:/etc/letsencrypt
+      - ./data/nginx-local:/etc/letsencrypt
     depends_on:
       - api
