@@ -1,5 +1,14 @@
 # Messanger_API
 
+## TO DO ##
+
+aggiungi conn.rollback() a tutti gli statement di insert into che potrebbe dare problemi
+sistema la documentazione sottostante con le cosine nuove
+
+create_chat (intanto quelle personali, dopo per gruppo+channel ci pensiamo)
+get_all_chat(per fare il display di tutte le chat nella home principale dopo il login)
+
+####
 
 API per l`app di messaggistica
 
