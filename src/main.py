@@ -89,6 +89,36 @@ async def main(handle:str):
 
 
 
+@app.get("/user/action/send-message")
+async def main(api_key:str,chat_id:str,text:str):
+
+    ## DB INFO
+
+#   message_id bigint NOT NULL,                     generated in database
+#   chat_id bigint NOT NULL,                        from API request
+#   text text NOT NULL,                             from API request
+#   sender bigint NOT NULL,                         from api_key for API request
+#   date timestamp without time zone NOT NULL,      generated in databse
+
+    ##
+
+    # API CHECK
+
+    #user_id = APICHECK
+
+    type = "send_message"
+    confirmation = False
+
+    #handle = database.user_group_channel_fromID_toHandle(user_id)
+    #confirmation = database.send_message(handle)
+
+    #logAPIRequest(handle,type,confirmation)
+
+    return {type: confirmation}
+
+
+
+
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
