@@ -115,4 +115,34 @@ async def main(api_key:str,chat_id:str,text:str):
     return {type: confirmation}
 
 
+
+@app.get("/chat/create/personal-chat")
+async def main(api_key:str,receiver:str):
+
+    ## DB INFO
+
+#   chat_id bigint NOT NULL,                        generated based on both users handles 
+#                                                   example:  sender: giorgio  receiver: antonio  chat_id = giorgio-antonio
+
+    ##
+
+    # API CHECK
+
+    handle = get_userHandle_from_apiKey(api_key)
+
+    type = "create_personal-chat"
+    confirmation = False
+
+    ### CHECK IF RECEIVER IS AN HANDLE OR A USER ID 
+
+    ## WE NEED HANDLE NOT USERID
+
+    chat = object.Chat(handle,receiver)
+    confirmation = database.create_personalChat(chat)
+
+    logAPIRequest(handle,type,confirmation)
+
+    return {type: confirmation}
+
+
 # ADMIN REQUEST # 

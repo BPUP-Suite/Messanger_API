@@ -228,6 +228,20 @@ def user_login_check(loginUser):
 
     return confirmation
 
+
+
+def is_it_chatID(chat_id):
+
+    if "-" in chat_id: # char found only in chat_id (group_id/channel_id are pure number)
+
+        split = chat_id.split("-")
+        user1 = split[0]
+        user2 = split[1]
+
+        return check_personalChat_exist(user1,user2)
+    
+    return chat_id
+
 def send_message(message):
 
     chat_id = message.chat_id
@@ -238,6 +252,13 @@ def send_message(message):
     cursor = conn.cursor()
 
     confirmation = True
+
+    ## search if its chat_id or group_id/channel_id
+
+    chat_id = is_it_chatID(chat_id)
+
+    if chat_id == False:
+        return chat_id ## PERSONAL CHAT DOESNT EXIST
 
     ## FIRST PHASE: ADD MESSAGE TO DB
 
@@ -257,3 +278,72 @@ def send_message(message):
     ## SECOND PHASE: SEND MESSAGE TO USERS CLIENT (IDK WHAT TO DO HELP ME PLZ) ########## TBD ##########
 
     return confirmation
+
+
+
+def check_personalChat_exist(user1,user2):
+
+    chat_id_alternative1 = user1+"-"+user2
+    chat_id_alternative1 = user2+"-"+user1
+
+    cursor = conn.cursor()
+
+    QUERY = f"SELECT chat_id FROM public.chats WHERE chat_id = '{chat_id_alternative1}'"
+
+    logger.toConsole(QUERY)
+
+    cursor.execute(QUERY)
+
+    # fetch database for chat_id (it should only be 1 or not existent) ### alternative1
+    result = cursor.fetchone()
+    
+    if result == None:
+            QUERY = f"SELECT chat_id FROM public.chats WHERE chat_id = '{chat_id_alternative2}'"
+
+            logger.toConsole(QUERY)
+
+            cursor.execute(QUERY)
+
+            # fetch database for chat_id (it should only be 1 or not existent) ### alternative2
+            result = cursor.fetchone()
+            
+            cursor.close()
+            if result == None:
+                return False
+    
+    return result[0]  
+
+    
+
+def create_personalChat(chat):
+
+    user1 = chat.user1
+    user2 = chat.user2
+
+    cursor = conn.cursor()
+
+    confirmation = True
+
+    if check_personalChat_exist(user1,user2) != False:
+        logger.toConsole("Chat alredy exists")
+        cursor.close()
+        return False
+
+    ## ADD CHAT TO DB
+
+    chat_id = user1+"-"+user2
+
+    QUERY = f"INSERT INTO public.chats (chat_id) VALUES ('{chat_id}')" 
+
+    logger.toConsole(QUERY)
+
+    try:
+        cursor.execute(QUERY)
+        conn.commit()
+    except:
+        confirmation = False
+        conn.rollback()
+    
+    cursor.close()
+
+    return confirmation 
