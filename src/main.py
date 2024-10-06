@@ -1,12 +1,12 @@
 # START COMMAND: uvicorn main:app --reload
 
 from fastapi import FastAPI, Request 
-from security.auth import get_user_handle
+from security.auth import get_userHandle_from_apiKey
 import secrets # api key
 
 import db.database as database
 import db.object as object
-from security.auth import generate_hash
+from security.encrypter import generate_hash
 from logger.logger import logAPIRequest 
 
 app = FastAPI()
@@ -15,8 +15,6 @@ if not(database.exist()):
     database.init()
 
 # get /docs for all request documentation
-
-# 
 
 @app.get("/user/action/access")
 async def main(email:str):
@@ -104,44 +102,17 @@ async def main(api_key:str,chat_id:str,text:str):
 
     # API CHECK
 
-    #user_id = APICHECK
+    handle = get_userHandle_from_apiKey(api_key)
 
     type = "send_message"
     confirmation = False
 
-    #handle = database.user_group_channel_fromID_toHandle(user_id)
-    #confirmation = database.send_message(handle)
+    message = object.Message(chat_id,text,handle)
+    confirmation = database.send_message(message)
 
-    #logAPIRequest(handle,type,confirmation)
+    logAPIRequest(handle,type,confirmation)
 
     return {type: confirmation}
-
-
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
-
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-
-
-@app.get("/hellos/ciao")
-async def say_hello(request: Request):
-    
-    handle = get_user_handle(request.headers.get('BPUP-API-KEY'))
-
-    logAPIRequest(handle,"hello","test")
-
-    return {"message": f"Hello {handle} {request.headers.get('BPUP-API-KEY')}"}
-
 
 
 # ADMIN REQUEST # 
