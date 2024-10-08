@@ -284,7 +284,7 @@ def send_message(message):
 def check_personalChat_exist(user1,user2):
 
     chat_id_alternative1 = user1+"-"+user2
-    chat_id_alternative1 = user2+"-"+user1
+    chat_id_alternative2 = user2+"-"+user1
 
     cursor = conn.cursor()
 
