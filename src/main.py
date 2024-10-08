@@ -1,6 +1,6 @@
 # START COMMAND: uvicorn main:app --reload
 
-from fastapi import FastAPI, Request 
+from fastapi import FastAPI, File, UploadFile, Response
 from security.auth import get_userHandle_from_apiKey
 import secrets # api key
 
@@ -144,5 +144,70 @@ async def main(api_key:str,receiver:str):
 
     return {type: confirmation}
 
+@app.get("/chat/create/group")
+async def main(api_key:str,name:str,description:str):
+
+    ## DB INFO  
+
+    # chat_id bigint NOT NULL,                generated in db
+    # members bigint[] NOT NULL,              first element is user_id from api_key (api_key->handle->user_id)
+    # admins bigint[] NOT NULL,               //
+    # description text,                       from request
+    # group_picture_id bigint[]               ????? da rivedere
+
+    # API CHECK
+
+    handle = get_userHandle_from_apiKey(api_key)
+
+    type = "create-group"
+    confirmation = False
+
+    group = object.Group(handle,name,description)
+    confirmation = database.create_group(group)
+
+    logAPIRequest(handle,type,confirmation)
+
+    return {type: confirmation}
+
+@app.get("/upload")
+async def main(api_key:str,type:str,fileA: UploadFile = File(...)):  # da sostituire type con utilizzo delle cartelle
+
+    # API CHECK
+
+    handle = get_userHandle_from_apiKey(api_key)
+
+    type="upload"+type
+    confirmation = False
+
+    file = object.File(handle,type,fileA)
+    confirmation = database.upload_file(file)
+
+    logAPIRequest(handle,type,confirmation)
+
+    return {type: confirmation}
+
+@app.get("/download")
+async def main(api_key:str,file_id:str):
+
+    # API CHECK
+
+    handle = get_userHandle_from_apiKey(api_key)
+
+    type="download"
+
+    ##DA VEDERE SE UTENTE HA ACCESSO AL FILE (è nel canale/gruppo/chat da cui deriva) fatto nella classe database
+    file = database.download_file(handle,file_id) # file
+
+    ## test download file
+    #handle="test"
+    #with open("requirements.txt","r") as filez:
+    #        data = filez.read()
+    #file = object.FileDownload(data,"test","txt")
+    ##
+
+    logAPIRequest(handle,type,file!=None)
+
+    headers = {'Content-Disposition': f'inline; filename={file.name}',"content-type": "application/octet-stream"}
+    return Response(file.data,media_type=f'application/{file.type}',headers=headers)
 
 # ADMIN REQUEST # 

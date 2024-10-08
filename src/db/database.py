@@ -347,3 +347,16 @@ def create_personalChat(chat):
     cursor.close()
 
     return confirmation 
+
+
+def create_group(group):
+
+    handle = group.handle
+    name = group.name
+    description = group.description
+
+    return None
+
+def upload_file(file):
+
+    return None
