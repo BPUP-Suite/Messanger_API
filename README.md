@@ -96,6 +96,11 @@ Recupera i valori delle variabili ambientali e dei file presenti all'interno del
 
     - salt (dentro /src/db), che contiene un parametro di sicurezza per rendere più sicura la crittografia della password (viene generato una sola volta al primo start, senza questo file decifrare le password presenti nel database è impossibile [quindi attenzione a non perderlo] ) 
 
+#### encrypter.py
+
+Prima insieme alla classe envManager.py, poi separato per problemi di import.
+    
+    Recupera il salt dal file (usando envManager) e lo usa per cifrare le passuord richieste e confermare eventuali hash
 
 ### MAIN
 

@@ -189,6 +189,8 @@ async def main(api_key:str,type:str,fileA: UploadFile = File(...)):  # da sostit
 @app.get("/download")
 async def main(api_key:str,file_id:str):
 
+    #DB INFO
+
     # API CHECK
 
     handle = get_userHandle_from_apiKey(api_key)
