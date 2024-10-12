@@ -1,13 +1,13 @@
 from fastapi import HTTPException, status
-from db.database import check_api_key
+from db.database import get_userHandle_from_apiKey
 
 # security measures
 
     # api key checker
 
-def get_userHandle_from_apiKey(api_key_header):
+def check_api_key(api_key_header):
 
-    handle = check_api_key(api_key_header) 
+    handle = get_userHandle_from_apiKey(api_key_header) 
 
     if handle != None:
         return handle

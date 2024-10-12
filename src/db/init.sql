@@ -1,9 +1,9 @@
---	          001 000 000 000 000 000 000      // user
---	          user1-user2		               // chat
--- 	          010 000 000 000 000 000 000      // group
---            100 000 000 000 000 000 000      // channel
--- 001 000 000 000 000 000 000 000 000 000 000 // message
--- 010 000 000 000 000 000 000 000 000 000 000 // files
+-- 1000000000000000000 // user
+-- 2000000000000000000 // chat
+-- 3000000000000000000 // group
+-- 4000000000000000000 // channel
+-- 5000000000000000000 // message
+-- 6000000000000000000 // files
 
 --
 -- PostgreSQL database dump
@@ -49,7 +49,9 @@ ALTER TABLE public.channels OWNER TO bpup;
 --
 
 CREATE TABLE public.chats (
-    chat_id bigint NOT NULL,
+    chat_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 2000000000000000000 MINVALUE 2000000000000000000 MAXVALUE 2999999999999999999 CACHE 1 ),
+    user1 text NOT NULL,
+    user2 text NOT NULL,
     pinned_messages text[]
 );
 
@@ -103,10 +105,10 @@ ALTER TABLE public.handles OWNER TO bpup;
 --
 
 CREATE TABLE public.messages (
-    message_id bigint NOT NULL,
-    chat_id bigint NOT NULL,
+    message_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 5000000000000000000 MINVALUE 5000000000000000000 MAXVALUE 5999999999999999999 CACHE 1 ),
+    chat_id text NOT NULL,
     text text NOT NULL,
-    sender bigint NOT NULL,
+    sender text NOT NULL,
     date timestamp without time zone NOT NULL,
     forward_message_id bigint,
     file_id bigint,
@@ -122,7 +124,7 @@ ALTER TABLE public.messages OWNER TO bpup;
 
 CREATE TABLE public.notification (
     user_id bigint NOT NULL,
-    chat_id bigint NOT NULL,
+    chat_id text NOT NULL,
     disable boolean DEFAULT false NOT NULL
 );
 
@@ -163,35 +165,11 @@ CREATE TABLE public.apiKeys(
 ALTER TABLE public.apiKeys OWNER TO bpup;
 
 --
--- Name: channels channels_pkey; Type: CONSTRAINT; Schema: public; 
---
-
-ALTER TABLE ONLY public.channels
-    ADD CONSTRAINT channels_pkey PRIMARY KEY (chat_id);
-
-
---
--- Name: chats chats_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.chats
-    ADD CONSTRAINT chats_pkey PRIMARY KEY (chat_id);
-
-
---
 -- Name: files files_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
 --
 
 ALTER TABLE ONLY public.files
     ADD CONSTRAINT files_pkey PRIMARY KEY (files_id);
-
-
---
--- Name: groups groups_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.groups
-    ADD CONSTRAINT groups_pkey PRIMARY KEY (chat_id);
 
 --
 -- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
@@ -199,14 +177,6 @@ ALTER TABLE ONLY public.groups
 
 ALTER TABLE ONLY public.messages
     ADD CONSTRAINT messages_pkey PRIMARY KEY (message_id);
-
-
---
--- Name: notification notification_pkey; Type: CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.notification
-    ADD CONSTRAINT notification_pkey PRIMARY KEY (user_id, chat_id);
 
 
 --
@@ -225,91 +195,6 @@ ALTER TABLE ONLY public.apiKeys
 --
 
 ALTER TABLE ONLY public.handles
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(user_id) NOT VALID;
-
-ALTER TABLE ONLY public.handles
-    ADD CONSTRAINT group_id FOREIGN KEY (group_id) REFERENCES public.groups(chat_id) NOT VALID;
-
-ALTER TABLE ONLY public.handles
-    ADD CONSTRAINT channel_id FOREIGN KEY (channel_id) REFERENCES public.channels(chat_id) NOT VALID;
-
-
---
--- Name: messages channel_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.messages
-    ADD CONSTRAINT channel_id FOREIGN KEY (chat_id) REFERENCES public.groups(chat_id) NOT VALID;
-
-
---
--- Name: notification channel_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.notification
-    ADD CONSTRAINT channel_id FOREIGN KEY (chat_id) REFERENCES public.channels(chat_id) NOT VALID;
-
-
---
--- Name: messages chat_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.messages
-    ADD CONSTRAINT chat_id FOREIGN KEY (chat_id) REFERENCES public.chats(chat_id) NOT VALID;
-
-
---
--- Name: notification chat_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.notification
-    ADD CONSTRAINT chat_id FOREIGN KEY (chat_id) REFERENCES public.chats(chat_id) NOT VALID;
-
-
---
--- Name: messages file_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.messages
-    ADD CONSTRAINT file_id FOREIGN KEY (file_id) REFERENCES public.files(files_id) NOT VALID;
-
-
---
--- Name: messages forward_message_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.messages
-    ADD CONSTRAINT forward_message_id FOREIGN KEY (forward_message_id) REFERENCES public.messages(message_id) NOT VALID;
-
---
--- Name: messages group_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.messages
-    ADD CONSTRAINT group_id FOREIGN KEY (chat_id) REFERENCES public.groups(chat_id) NOT VALID;
-
-
---
--- Name: notification group_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.notification
-    ADD CONSTRAINT group_id FOREIGN KEY (chat_id) REFERENCES public.groups(chat_id) NOT VALID;
-
-
---
--- Name: messages sender; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.messages
-    ADD CONSTRAINT sender FOREIGN KEY (sender) REFERENCES public.users(user_id) NOT VALID;
-
-
---
--- Name: notification user_id; Type: FK CONSTRAINT; Schema: public; Owner: bpup
---
-
-ALTER TABLE ONLY public.notification
     ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(user_id) NOT VALID;
 
 ALTER TABLE ONLY public.apiKeys

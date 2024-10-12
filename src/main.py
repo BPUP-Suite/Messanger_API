@@ -1,8 +1,8 @@
 # START COMMAND: uvicorn main:app --reload
 
-from fastapi import FastAPI, File, UploadFile, Response
-from security.auth import get_userHandle_from_apiKey
-import secrets # api key
+from fastapi import FastAPI, File, UploadFile, Response, WebSocket
+from security.auth import check_api_key
+from typing import Dict, List
 
 import db.database as database
 import db.object as object
@@ -15,6 +15,49 @@ if not(database.exist()):
     database.init()
 
 # get /docs for all request documentation
+
+
+# WEB SOCKET MANAGER
+
+active_connections: Dict[str, List[WebSocket]] = {} # array of active connection of every user
+
+@app.websocket("/ws/{user_id}")
+async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # user_id used for connection, api_key to check if user is valid
+  
+  confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
+
+  if not confirmation:
+      await websocket.close()
+      return
+
+  # Add the websocket connection to the active connections for the room
+  if user_id not in active_connections:
+      active_connections[user_id] = []
+  active_connections[user_id].append(websocket)
+
+# DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
+ # try:
+ #     await websocket.accept()
+  #    while True:
+          # Receive message from the client
+  #        message = await websocket.receive_text()
+
+          # Construct the message data to be sent
+   #       message_data = {
+    #          "room_id": room_id,
+     #         "message": message,
+      #    }
+       #   json_message = json.dumps(message_data)
+
+          # Broadcast the message to all connected websockets in the room
+        #  for connection in active_connections[room_id]:
+         #   if connection != websocket:
+          #    await connection.send_text(json_message)
+
+  #except:
+        #pass
+   ####### FINE 
+
 
 @app.get("/user/action/access")
 async def main(email:str):
@@ -42,11 +85,10 @@ async def main(email:str,name:str,surname:str,handle:str,password:str,confirm_pa
     type = "signedUp"
     confirmation = False
 
-    api_key = secrets.token_urlsafe(256)
 
     if(password==confirm_password):
         password = generate_hash(password) # hashed password
-        user = object.User(email,name,surname,handle,api_key,password) # create User obj used in databases method
+        user = object.User(email,name,surname,handle,password) # create User obj used in databases method
         confirmation = database.add_user_toDB(user) # return True: Signup OK | False: Some error occurred, retry
 
     logAPIRequest(user.handle,type,confirmation)
@@ -88,7 +130,7 @@ async def main(handle:str):
 
 
 @app.get("/user/action/send-message")
-async def main(api_key:str,chat_id:str,text:str):
+async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
 
     ## DB INFO
 
@@ -102,20 +144,43 @@ async def main(api_key:str,chat_id:str,text:str):
 
     # API CHECK
 
-    handle = get_userHandle_from_apiKey(api_key)
+    handle = check_api_key(api_key)
 
     type = "send_message"
     confirmation = False
 
     message = object.Message(chat_id,text,handle)
-    confirmation = database.send_message(message)
+
+    json_message,receivers = database.send_message(message,receiver)
+
+    if(json_message != False):
+
+        # SEND MESSAGE TO RECEIVER CLIENT
+
+        for receiver in receivers:
+            try:
+                for connection in active_connections[receiver]:
+                    await connection.send_text(json_message)
+            except:
+                print("No users active for "+receiver)
+
+        # SEND MESSAGE TO OTHER SENDER CLIENT
+
+        try:
+            for connection in active_connections[handle]:
+                await connection.send_text(json_message)   
+        except:
+            print("No users active for "+handle)   
+
+        confirmation = True
 
     logAPIRequest(handle,type,confirmation)
 
-    return {type: confirmation}
+    #return {type:confirmation}
+    return json_message
 
 
-
+# NOT NEEDED
 @app.get("/chat/create/personal-chat")
 async def main(api_key:str,receiver:str):
 
@@ -128,7 +193,7 @@ async def main(api_key:str,receiver:str):
 
     # API CHECK
 
-    handle = get_userHandle_from_apiKey(api_key)
+    handle = check_api_key(api_key)
 
     type = "create_personal-chat"
     confirmation = False
@@ -157,7 +222,7 @@ async def main(api_key:str,name:str,description:str):
 
     # API CHECK
 
-    handle = get_userHandle_from_apiKey(api_key)
+    handle = check_api_key(api_key)
 
     type = "create-group"
     confirmation = False
@@ -174,7 +239,7 @@ async def main(api_key:str,type:str,fileA: UploadFile = File(...)):  # da sostit
 
     # API CHECK
 
-    handle = get_userHandle_from_apiKey(api_key)
+    handle = check_api_key(api_key)
 
     type="upload"+type
     confirmation = False
@@ -193,7 +258,7 @@ async def main(api_key:str,file_id:str):
 
     # API CHECK
 
-    handle = get_userHandle_from_apiKey(api_key)
+    handle = check_api_key(api_key)
 
     type="download"
 
@@ -213,3 +278,12 @@ async def main(api_key:str,file_id:str):
     return Response(file.data,media_type=f'application/{file.type}',headers=headers)
 
 # ADMIN REQUEST # 
+
+
+
+## STARTING APPLICATION
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8000) # ADD POSSIBILITY TO CHANGE IP + PORT
