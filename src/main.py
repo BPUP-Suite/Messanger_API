@@ -27,10 +27,7 @@ active_connections: Dict[str, List[WebSocket]] = {} # array of active connection
 @app.get("/test")
 async def main():
 
-    for x in active_connections:
-        print (x)
-        for y in active_connections[x]:
-            print (y,':',active_connections[x][y])
+    print(active_connections["1000000000000000000"].count)
 
     for connection in active_connections["1000000000000000000"]:
         await connection.send_text("Magna vola")
