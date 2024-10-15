@@ -10,7 +10,7 @@ from typing import Dict, List
 import db.database as database
 import db.object as object
 from security.encrypter import generate_hash
-from logger.logger import logAPIRequest, logWSConnection
+from logger.logger import logAPIRequest, logWSConnection, logClosedWSConnection
 
 app = FastAPI()
 
@@ -41,6 +41,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
   if not confirmation:
       await websocket.close()
+      logClosedWSConnection(user_id)
       return {"logged":"False"}
 
 
