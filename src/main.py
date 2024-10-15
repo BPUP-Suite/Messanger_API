@@ -35,21 +35,20 @@ async def main():
 @app.websocket("/ws/{user_id}/{api_key}")
 async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # user_id used for connection, api_key to check if user is valid
 
-  logWSConnection(user_id)
-
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
 
   if not confirmation:
       await websocket.close()
-      return
+      return {"logged":"False"}
   
+  logWSConnection(user_id)
+
   await websocket.accept()
 
   # Add the websocket connection to the active connections for the room
   if user_id not in active_connections:
       active_connections[user_id] = []
     
-  
   active_connections[user_id].append(websocket)
 
 # DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
