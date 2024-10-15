@@ -24,11 +24,19 @@ if not(database.exist()):
 
 active_connections: Dict[str, List[WebSocket]] = {} # array of active connection of every user
 
+@app.get("/test")
+async def main():
+
+    for connection in active_connections[1000000000000000000]:
+        await connection.send_text("Magna vola")
+
+    return {"done":"nesi"}
 
 @app.websocket("/ws/{user_id}/{api_key}")
 async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # user_id used for connection, api_key to check if user is valid
 
   logWSConnection(user_id)
+
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
 
   if not confirmation:
