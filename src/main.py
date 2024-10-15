@@ -1,13 +1,16 @@
 # START COMMAND: uvicorn main:app --reload
 
-from fastapi import FastAPI, File, UploadFile, Response, WebSocket
+from fastapi import FastAPI, File, UploadFile, Response
+from fastapi.websockets import WebSocket
+from fastapi.testclient import TestClient
+
 from security.auth import check_api_key
 from typing import Dict, List
 
 import db.database as database
 import db.object as object
 from security.encrypter import generate_hash
-from logger.logger import logAPIRequest 
+from logger.logger import logAPIRequest, logWSConnection
 
 app = FastAPI()
 
@@ -21,18 +24,23 @@ if not(database.exist()):
 
 active_connections: Dict[str, List[WebSocket]] = {} # array of active connection of every user
 
-@app.websocket("/ws/{user_id}")
+
+@app.websocket("/ws/{user_id}/{api_key}")
 async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # user_id used for connection, api_key to check if user is valid
-  
+
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
 
   if not confirmation:
       await websocket.close()
       return
+  
+  websocket.accept()
 
   # Add the websocket connection to the active connections for the room
   if user_id not in active_connections:
       active_connections[user_id] = []
+    
+  
   active_connections[user_id].append(websocket)
 
 # DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
@@ -57,7 +65,6 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   #except:
         #pass
    ####### FINE 
-
 
 @app.get("/user/action/access")
 async def main(email:str):
@@ -141,6 +148,8 @@ async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
 #   date timestamp without time zone NOT NULL,      generated in databse
 
     ##
+
+    ## tries to create chat if chat_id doesnt exist (and is a personal chat, chat id for personal chat always starts with "2")
 
     # API CHECK
 

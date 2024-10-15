@@ -199,6 +199,30 @@ def check_userExistence_fromEmail(email):
 
     return confirmation
 
+def check_userExistence_fromHandle(handle):
+
+    cursor = conn.cursor()
+
+    confirmation = True
+
+    QUERY = f"SELECT user_id FROM public.handles WHERE handle = '{handle}'"
+
+    logger.toConsole(QUERY)
+
+    cursor.execute(QUERY)
+
+    # fetch database for user_id (it should only be 1)
+    result = cursor.fetchone()
+
+    if result == None:
+        confirmation = False
+    
+    cursor.close()
+
+    # true: user exists | false: user doesnt exist
+
+    return confirmation
+
 def user_login_check(loginUser):
 
     email = loginUser.email
@@ -310,7 +334,7 @@ def send_message(message,receiverPC):
 
     chat_id = message.chat_id
     text = message.text
-    sender = message.sender
+    sender = message.sender # handle
     date = message.date
 
     type = chat_type_fromChatID(chat_id) # Check what type of chat we need to send message
@@ -363,14 +387,14 @@ def send_message(message,receiverPC):
 
     return json_message,receiver
 
-    
 
 def create_personalChat(sender,receiver):
 
     cursor = conn.cursor()
 
-    ############################### DA FARE: CHECK IF BOTH USERS EXIST
-    ############################### CHECK IF CHAT ALREADY EXIST
+    # check if both users exist
+    if not (check_userExistence_fromHandle(sender) & check_userExistence_fromHandle(receiver)):
+        return False
 
     ## ADD CHAT TO DB
 

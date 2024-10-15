@@ -16,3 +16,7 @@ def toFile(text): # write to a log file
 def logAPIRequest(username,resource,value):
     text = f"{username} -> {resource} -> {value}"
     toConsole(text)
+
+def logWSConnection(user_id):
+    text = f"{user_id} new websocket"
+    toConsole(text)
