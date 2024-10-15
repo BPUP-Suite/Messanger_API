@@ -27,25 +27,24 @@ active_connections: Dict[str, List[WebSocket]] = {} # array of active connection
 @app.get("/test")
 async def main():
 
-    #print(active_connections["1000000000000000000"].count())
-
     for connection in active_connections["1000000000000000000"]:
         await connection.send_text("Magna vola")
 
     return {"done":"nesi"}
 
 @app.websocket("/ws/{user_id}/{api_key}")
+
+# IF WEBSOCKET CLOSED THEN DESTROY IT IN THE ARRAY (????)
+# IF WEBSOCKET DOESNT EXIST CRASH
+
 async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # user_id used for connection, api_key to check if user is valid
 
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
 
   if not confirmation:
       await websocket.close()
-      logClosedWSConnection(user_id)
+      logWSConnection(user_id,active_connections[user_id].count(),"Closed")
       return {"logged":"False"}
-
-
-  logWSConnection(user_id)
 
   # Add the websocket connection to the active connections for the room
   if user_id not in active_connections:
@@ -54,38 +53,15 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   active_connections[user_id].append(websocket)
 
   await websocket.accept()
+  logWSConnection(user_id,active_connections[user_id].count(),"Opened")
+  data = await websocket.send_text("Connessione al socket effettuata")
 
-  await websocket.send_text("sto cercando la vita")
-
-  #try:
   while True:
     data = await websocket.receive_text()
     print(data)
-  #except:
-   # pass
 
 # DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
- # try:
- #     await websocket.accept()
-  #    while True:
-          # Receive message from the client
-  #        message = await websocket.receive_text()
 
-          # Construct the message data to be sent
-   #       message_data = {
-    #          "room_id": room_id,
-     #         "message": message,
-      #    }
-       #   json_message = json.dumps(message_data)
-
-          # Broadcast the message to all connected websockets in the room
-        #  for connection in active_connections[room_id]:
-         #   if connection != websocket:
-          #    await connection.send_text(json_message)
-
-  #except:
-        #pass
-   ####### FINE 
 
 @app.get("/user/action/access")
 async def main(email:str):

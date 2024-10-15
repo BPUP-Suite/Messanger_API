@@ -17,10 +17,6 @@ def logAPIRequest(username,resource,value):
     text = f"{username} -> {resource} -> {value}"
     toConsole(text)
 
-def logWSConnection(user_id):
-    text = f"{user_id} new websocket"
-    toConsole(text)
-
-def logClosedWSConnection(user_id):
-    text = f"Closed {user_id}, no auth"
+def logWSConnection(user_id,wb_counter,message):
+    text = f"WB -> {message} -> {user_id} ({wb_counter} wb attivi!)"
     toConsole(text)
