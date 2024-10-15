@@ -58,7 +58,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
         data = await websocket.receive_json()
         print(data)
   except:
-    await websocket.close()
+    pass
 
 # DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
  # try:
