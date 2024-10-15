@@ -53,7 +53,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
     
   active_connections[user_id].append(websocket)
 
-  websocket.send_text("sto cercando la vita")
+  await websocket.send_text("sto cercando la vita")
 
   try:
       while True:
