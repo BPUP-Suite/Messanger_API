@@ -43,7 +43,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
   if not confirmation:
       await websocket.close()
-      logWSConnection(user_id,active_connections[user_id].count(),"Closed")
+      logWSConnection(user_id,len(active_connections[user_id]),"Closed")
       return {"logged":"False"}
 
   # Add the websocket connection to the active connections for the room
@@ -53,7 +53,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   active_connections[user_id].append(websocket)
 
   await websocket.accept()
-  logWSConnection(user_id,active_connections[user_id].count(),"Opened")
+  logWSConnection(user_id,len(active_connections[user_id]),"Opened")
   data = await websocket.send_text("Connessione al socket effettuata")
 
   while True:
