@@ -10,7 +10,7 @@ from typing import Dict, List
 import db.database as database
 import db.object as object
 from security.encrypter import generate_hash
-from logger.logger import logAPIRequest, logWSConnection, logClosedWSConnection
+from logger.logger import logAPIRequest, logWSConnection
 
 app = FastAPI()
 
