@@ -189,6 +189,20 @@ async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
     return json_message
 
 
+@app.get("/user/action/get-user-id")
+async def main(api_key:str):
+
+    type = "user-id"
+
+    handle = check_api_key(api_key)
+    
+    userID = database.user_group_channel_fromHandle_toID(handle)
+
+    logAPIRequest(handle,type,userID)
+
+    return {type: userID}
+
+
 # NOT NEEDED
 @app.get("/chat/create/personal-chat")
 async def main(api_key:str,receiver:str):
