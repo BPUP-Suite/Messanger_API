@@ -34,8 +34,6 @@ async def main():
 
 @app.websocket("/ws/{user_id}/{api_key}")
 async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # user_id used for connection, api_key to check if user is valid
-  
-  await websocket.accept()
 
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
 
@@ -52,6 +50,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
       active_connections[user_id] = []
     
   active_connections[user_id].append(websocket)
+
+  await websocket.accept()
 
   await websocket.send_text("sto cercando la vita")
 
