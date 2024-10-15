@@ -34,7 +34,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
       await websocket.close()
       return
   
-  websocket.accept()
+  await websocket.accept()
 
   # Add the websocket connection to the active connections for the room
   if user_id not in active_connections:
