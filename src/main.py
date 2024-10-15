@@ -27,6 +27,11 @@ active_connections: Dict[str, List[WebSocket]] = {} # array of active connection
 @app.get("/test")
 async def main():
 
+    for x in active_connections:
+        print (x)
+        for y in active_connections[x]:
+            print (y,':',active_connections[x][y])
+
     for connection in active_connections["1000000000000000000"]:
         await connection.send_text("Magna vola")
 
@@ -55,12 +60,12 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
   await websocket.send_text("sto cercando la vita")
 
-  try:
-      while True:
-        data = await websocket.receive_json()
-        print(data)
-  except:
-    pass
+  #try:
+  while True:
+    data = await websocket.receive_text()
+    print(data)
+  #except:
+   # pass
 
 # DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
  # try:
