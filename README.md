@@ -1,5 +1,7 @@
 # Messanger_API
 
+    DOCUMENTAZIONE NON AGGIORNATA
+    
 ## TO DO ##
 
 aggiungi conn.rollback() a tutti gli statement di insert into che potrebbe dare problemi
