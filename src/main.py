@@ -1,8 +1,7 @@
 # START COMMAND: uvicorn main:app --reload
 
 from fastapi import FastAPI, File, UploadFile, Response
-from fastapi.websockets import WebSocket
-from fastapi.testclient import TestClient
+from fastapi.websockets import WebSocket,WebSocketDisconnect
 
 from security.auth import check_api_key
 from typing import Dict, List
@@ -25,12 +24,12 @@ if not(database.exist()):
 active_connections: Dict[str, List[WebSocket]] = {} # array of active connection of every user
 
 @app.get("/test")
-async def main():
+async def main(user_id:str,message:str): # 1000000000000000000
 
-    for connection in active_connections["1000000000000000000"]:
-        await connection.send_text("Magna vola")
+    for connection in active_connections[user_id]:
+        await connection.send_text(message)
 
-    return {"done":"nesi"}
+    return {user_id:message}
 
 @app.websocket("/ws/{user_id}/{api_key}")
 
@@ -42,9 +41,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
 
   if not confirmation:
-      await websocket.close()
+      await websocket.close(code=3000) # Not authorized
       logWSConnection(user_id,len(active_connections[user_id]),"Closed")
-      return {"logged":"False"}
 
   # Add the websocket connection to the active connections for the room
   if user_id not in active_connections:
@@ -56,11 +54,22 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   logWSConnection(user_id,len(active_connections[user_id]),"Opened")
   data = await websocket.send_text("Connessione al socket effettuata")
 
-  while True:
-    data = await websocket.receive_text()
-    print(data)
+  try:
+    while True:
+        data = await websocket.receive_text()
+        print(data)
+  except WebSocketDisconnect:
+      pass
 
 # DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
+
+###
+#DISCONNETTI DA TUTTE LE WEBSOCKET ALLO SHUTDOWN
+#@app.on_event("shutdown")
+#async def shutdown():
+ #   for websocket in active_connections_set:
+  #      await websocket.close(code=1001)
+###
 
 
 @app.get("/user/action/access")
@@ -204,7 +213,7 @@ async def main(api_key:str):
 @app.get("/chat/create/personal-chat")
 async def main(api_key:str,receiver:str):
 
-    ## DB INFO
+    ## DB INFOSELECT currval(pg_get_serial_sequence('persons','id'));
 
 #   chat_id bigint NOT NULL,                        generated based on both users handles 
 #                                                   example:  sender: giorgio  receiver: antonio  chat_id = giorgio-antonio
