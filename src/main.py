@@ -59,6 +59,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
         data = await websocket.receive_text()
         print(data)
   except WebSocketDisconnect:
+      active_connections[user_id].remove(websocket)
       pass
 
 # DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
