@@ -428,11 +428,38 @@ def create_personalChat(sender,receiver):
 
 def create_group(group):
 
-    handle = group.handle
+    handle = group.handle       #admin + member of group
     name = group.name
     description = group.description
 
-    return None
+    # init members + admins arrays
+    admins = members = [handle]
+    
+    cursor = conn.cursor()
+
+    ## ADD GROUP TO DB
+
+
+    #DA VERIFICARE IL FUNZIONAMENTO DI QUESTA QUERY ED EVENUTALMENTE IMPLEMENTARLA ANCHE PER PERSONAL CHAT CREATE ED ALTRI METODI CHE RICHIEDO LA CREAZIONE E IL RITIRO DELL'ID DELL' ELEMENTO CREATO
+    QUERY = f"INSERT INTO public.groups (name,members,admins,description) VALUES ('{name}',{members},{admins}'{description}');
+              SELECT currval(pg_get_serial_sequence('public.groups','chat_id'));" 
+    
+    logger.toConsole(QUERY)
+
+    try:
+        cursor.execute(QUERY)
+        conn.commit()
+        result = cursor.fetchone()
+    except:
+        conn.rollback()
+        return False # cannot create chat
+    
+    cursor.close()
+
+    if result == None:
+        return False
+
+    return result[0] 
 
 def upload_file(file):
 

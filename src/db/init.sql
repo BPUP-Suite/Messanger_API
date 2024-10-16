@@ -76,6 +76,7 @@ ALTER TABLE public.files OWNER TO bpup;
 
 CREATE TABLE public.groups (
     chat_id bigint NOT NULL,
+    name text NOT NULL,
     pinned_messages text[],
     members bigint[] NOT NULL,
     admins bigint[] NOT NULL,
