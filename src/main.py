@@ -9,12 +9,16 @@ from typing import Dict, List
 import db.database as database
 import db.object as object
 from security.encrypter import generate_hash
-from logger.logger import logAPIRequest, logWSConnection
+from logger.logger import logAPIRequest, logWSConnection, toConsole
 
 app = FastAPI()
 
+toConsole("API started!")
+
 if not(database.exist()):
+    toConsole("Creating database...")
     database.init()
+    toConsole("Database created!")
 
 # get /docs for all request documentation
 
