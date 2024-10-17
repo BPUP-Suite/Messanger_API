@@ -26,8 +26,11 @@ active_connections: Dict[str, List[WebSocket]] = {} # array of active connection
 @app.get("/test")
 async def main(user_id:str,message:str): # 1000000000000000000
 
-    for connection in active_connections[user_id]:
-        await connection.send_text(message)
+    try:
+        for connection in active_connections[user_id]:
+            await connection.send_text(message)
+    except:
+        pass
 
     return {user_id:message}
 
