@@ -41,7 +41,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data/api/database/files:/files
+      - ./data/api/logs:/usr/src/app/logs
     restart: unless-stopped
     depends_on:
       db:
