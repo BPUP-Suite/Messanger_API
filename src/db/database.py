@@ -36,7 +36,7 @@ def init(): # init del database
 
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)     
 
-    logger.toConsole("INIT DEL DATABASE ESEGUITO")
+    logger.fromDatabase("INIT DEL DATABASE ESEGUITO")
 
     cursor.execute(POSTGRESQL_INIT_SCRIPT)
 
@@ -52,7 +52,7 @@ def get_userHandle_from_apiKey(apy_key):
     
     # fetch database for api_key
     try:
-        logger.toConsole(QUERY)
+        logger.fromDatabase(QUERY)
 
         cursor.execute(QUERY)
         result = cursor.fetchone()
@@ -61,7 +61,7 @@ def get_userHandle_from_apiKey(apy_key):
         user_id = result[0]
 
     except:
-        logger.toConsole("No API Key found! Not authorized!")
+        logger.fromDatabase("No API Key found! Not authorized!")
         cursor.close()
         return None
 
@@ -79,7 +79,7 @@ def user_group_channel_fromID_toHandle(id):
 
     QUERY = f"SELECT handle FROM public.handles WHERE user_id = '{id}' OR group_id = '{id}' OR channel_id = '{id}'"
 
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     cursor.execute(QUERY)
 
@@ -100,7 +100,7 @@ def user_group_channel_fromHandle_toID(handle):
 
     QUERY = f"SELECT user_id,group_id,channel_id FROM public.handles WHERE handle = '{handle}'"
 
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     cursor.execute(QUERY)
 
@@ -132,7 +132,7 @@ def check_handle_availability(handle): # done
 
     QUERY = f"SELECT handle FROM public.handles WHERE handle = '{handle}'"
 
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     cursor.execute(QUERY)
 
@@ -159,11 +159,11 @@ def add_user_toDB(user): # aggiungi API key
     api_key = secrets.token_urlsafe(256)
 
     while(get_userHandle_from_apiKey(api_key) != None): # check if api key is duplicated (i think its impossibile but, better safe than sorry)
-        logger.toConsole("API Key duplicata, ne genero una nuova")
+        logger.fromDatabase("API Key duplicata, ne genero una nuova")
         api_key = secrets.token_urlsafe(256)
 
     QUERY = f"with new_user as (INSERT INTO public.users(email,name,surname,password) VALUES('{user.email}','{user.name}','{user.surname}','{user.password}') RETURNING user_id), new_handle AS (INSERT INTO public.handles(user_id,handle) VALUES((SELECT user_id FROM new_user),'{user.handle}')) INSERT INTO public.apiKeys(user_id,api_key) VALUES((SELECT user_id FROM new_user),'{api_key}')"
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     try:
         cursor.execute(QUERY)
@@ -183,7 +183,7 @@ def check_userExistence_fromEmail(email):
 
     QUERY = f"SELECT email FROM public.users WHERE email = '{email}'"
 
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     cursor.execute(QUERY)
 
@@ -207,7 +207,7 @@ def check_userExistence_fromHandle(handle):
 
     QUERY = f"SELECT user_id FROM public.handles WHERE handle = '{handle}'"
 
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     cursor.execute(QUERY)
 
@@ -235,7 +235,7 @@ def user_login_check(loginUser):
     # first query, find password
     QUERY = f"SELECT user_id,password FROM public.users WHERE email = '{email}'" 
 
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     cursor.execute(QUERY)
 
@@ -250,7 +250,7 @@ def user_login_check(loginUser):
             # second query, find api key
             QUERY = f"SELECT api_key FROM public.apiKeys WHERE user_id = '{user_id}'"
 
-            logger.toConsole(QUERY)
+            logger.fromDatabase(QUERY)
 
             cursor.execute(QUERY)
 
@@ -288,7 +288,7 @@ def has_user_access_to_chatID(sender,receiver,chat_id,type):
 
         QUERY = f"SELECT chat_id FROM public.chats WHERE chat_id = {chat_id} AND (user1 = '{sender}' OR user2 = '{sender}')"
 
-        logger.toConsole(QUERY)
+        logger.fromDatabase(QUERY)
 
         cursor.execute(QUERY)
         result = cursor.fetchone()
@@ -319,7 +319,7 @@ def get_receiver_personalChat(chat_id,sender):
 
     QUERY = f"SELECT user1,user2 FROM public.chats WHERE chat_id = '{chat_id}' AND user1 = '{sender}' OR user2 = '{sender}'"
 
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     cursor.execute(QUERY)
     result = cursor.fetchone()
@@ -367,7 +367,7 @@ def send_message(message,receiverPC):
 
     QUERY = f"INSERT INTO public.messages (chat_id,text,sender,date) VALUES ({chat_id},'{text}','{sender}','{date}')" 
 
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     try:
         cursor.execute(QUERY)
@@ -400,7 +400,7 @@ def create_personalChat(sender,receiver):
 
     QUERY = f"INSERT INTO public.chats (user1,user2) VALUES ('{sender}','{receiver}')" 
     
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     try:
         cursor.execute(QUERY)
@@ -410,7 +410,7 @@ def create_personalChat(sender,receiver):
         return False # cannot create chat
     
     QUERY = f"SELECT chat_id FROM public.chats WHERE user1 = '{sender}' AND user2 ='{receiver}'"
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     try:
         cursor.execute(QUERY)
@@ -443,7 +443,7 @@ def create_group(group):
     #DA VERIFICARE IL FUNZIONAMENTO DI QUESTA QUERY ED EVENUTALMENTE IMPLEMENTARLA ANCHE PER PERSONAL CHAT CREATE ED ALTRI METODI CHE RICHIEDO LA CREAZIONE E IL RITIRO DELL'ID DELL' ELEMENTO CREATO
     QUERY = f"INSERT INTO public.groups (name,members,admins,description) VALUES ('{name}',{members},{admins}'{description}'); SELECT currval(pg_get_serial_sequence('public.groups','chat_id'));" 
     
-    logger.toConsole(QUERY)
+    logger.fromDatabase(QUERY)
 
     try:
         cursor.execute(QUERY)
