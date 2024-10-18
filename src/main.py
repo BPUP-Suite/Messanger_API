@@ -111,8 +111,7 @@ async def main(email:str,name:str,surname:str,handle:str,password:str,confirm_pa
         password = generate_hash(password) # hashed password
         user = object.User(email,name,surname,handle,password) # create User obj used in databases method
         confirmation = database.add_user_toDB(user) # return True: Signup OK | False: Some error occurred, retry
-
-    logAPIRequest(user.handle,type,confirmation)
+        logAPIRequest(user.handle,type,confirmation)
 
     return {type: confirmation} # ritorna true: registrazione effettuata | false: errore, per qualche motivo (non si sa quale)
 
