@@ -33,6 +33,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.channels (
     chat_id bigint NOT NULL,
+    name text NOT NULL,
     pinned_messages text[],
     members bigint[] NOT NULL,
     admins bigint[] NOT NULL,
@@ -111,6 +112,8 @@ CREATE TABLE public.messages (
     text text NOT NULL,
     sender text NOT NULL,
     date timestamp without time zone NOT NULL,
+    -- modified boolean DEFAULT FALSE,
+    -- conferme di lettura array persone
     forward_message_id bigint,
     file_id bigint,
     file_type text

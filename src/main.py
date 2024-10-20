@@ -48,8 +48,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
 
   if not confirmation:
-      await websocket.close(code=3000) # Not authorized
       logWSConnection(user_id,len(active_connections[user_id]),"Closed")
+      await websocket.close(code=3000) # Not authorized
 
   # Add the websocket connection to the active connections for the room
   if user_id not in active_connections:
@@ -64,7 +64,14 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   try:
     while True:
         data = await websocket.receive_text()
-        print(data)
+
+        try:
+            apiKey = data["init"]
+            if apiKey != None:
+                await websocket.send_text(database.clientDB_init(apiKey))
+        except:
+            pass
+
   except WebSocketDisconnect:
       active_connections[user_id].remove(websocket)
       pass
@@ -171,7 +178,7 @@ async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
     type = "send_message"
     confirmation = False
 
-    message = object.Message(chat_id,text,handle)
+    message = object.Message(chat_id,text,handle,"")
 
     json_message,receivers = database.send_message(message,receiver)
 
@@ -244,6 +251,10 @@ async def main(api_key:str,receiver:str):
     logAPIRequest(handle,type,confirmation)
 
     return {type: confirmation}
+
+@app.get("/test2")
+async def main(api_key:str):
+    return database.clientDB_init(api_key)
 
 @app.get("/chat/create/group")
 async def main(api_key:str,name:str,description:str):

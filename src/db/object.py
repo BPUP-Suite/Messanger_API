@@ -14,16 +14,32 @@ class LoginUser:
     self.password = password
 
 class Message:
-  def __init__(self,chat_id,text,sender):
+  def __init__(self,chat_id,text,sender,date):
     self.chat_id = chat_id
     self.text = text
     self.sender = sender
-    self.date = datetime.now()
+    if date == None:
+      self.date = datetime.now()
+    else:
+      self.date = date
+
+class MessageJson:
+  def __init__(self,message_id,text,sender,date):
+    self.message_id = message_id
+    self.text = text
+    self.sender = sender
+    self.date = date
 
 class Chat:
   def __init__(self,user1,user2):
     self.user1 = user1
     self.user2 = user2
+
+class ChatJson:
+  def __init__(self,chat_id,user,messages):
+    self.chat_id = chat_id
+    self.user = user
+    self.messages = messages
 
 class Group:
   def __init__(self,handle,name,description):

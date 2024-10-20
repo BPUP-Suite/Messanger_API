@@ -42,13 +42,105 @@ def init(): # init del database
 
     cursor.close()
 
-def get_userHandle_from_apiKey(apy_key):
+def clientDB_init(api_key):
+
+    handle = get_userHandle_from_apiKey(api_key)
+
+    if handle == None:
+        return "{'init':'false'}"
+    
+    # get local user information
+
+    user_id = user_group_channel_fromHandle_toID(handle)
+    cursor = conn.cursor()
+
+    QUERY = f"SELECT email,name,surname FROM public.users WHERE user_id='{user_id}'"
+    
+    try:
+        logger.fromDatabase(QUERY)
+
+        cursor.execute(QUERY)
+        result = cursor.fetchone()
+        cursor.close()
+
+        email = result[0]
+        name = result[1]
+        surname = result[2]
+
+    except:
+        cursor.close()
+        return "{'init':'false'}"
+    
+    # get chat information
+
+    chats = []
+
+    cursor = conn.cursor()
+
+    QUERY = f"SELECT chat_id,user1,user2 FROM public.chats WHERE user1='{handle}' OR user2='{handle}'"
+    
+    try:
+        logger.fromDatabase(QUERY)
+
+        cursor.execute(QUERY)
+        resultChat = cursor.fetchall()
+
+        for rowChat in resultChat:
+            chat_id = rowChat[0]
+
+            if rowChat[1] == handle:
+                user = rowChat[2]
+            else:
+                user = rowChat[1]
+            
+            # get messages info
+
+            messages = []
+
+            QUERY = f"SELECT message_id,text,sender,date FROM public.messages WHERE chat_id='{chat_id}'"
+
+            try:
+                logger.fromDatabase(QUERY)
+
+                cursor.execute(QUERY)
+                resultMessage = cursor.fetchall()
+
+                for rowMessage in resultMessage:
+
+                    message = object.MessageJson(rowMessage[0],rowMessage[1],rowMessage[2],rowMessage[3])
+                    messages.append(message)
+            
+            except:
+                cursor.close()
+                return "{'init':'false'}"
+
+            chat = object.ChatJson(chat_id,user,messages)
+            chats.append(chat)
+
+    except:
+        cursor.close()
+        return "{'init':'false'}"
+
+    # get groups information
+
+    groups = []
+
+    # get channels information
+
+    channels = []
+
+    cursor.close()
+
+    return jsonBuilder.init_json(handle,email,name,surname,chats,groups,channels)
+
+
+def get_userHandle_from_apiKey(api_key):
 
     user_handle = None
 
     cursor = conn.cursor()
 
-    QUERY = f"SELECT user_id FROM public.apiKeys WHERE api_key='{apy_key}'"
+    QUERY = f"SELECT user_id FROM public.apiKeys WHERE api_key='{api_key}'"
     
     # fetch database for api_key
     try:
