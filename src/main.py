@@ -68,14 +68,16 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
         data = await websocket.receive_text()
         logWSMessage(user_id,"Message: "+data)
         print("DATI RICEVUTI DA WEBSOCKET"+user_id+" :"+data)
-        
+
+            # TO FIX MISSING VALUE (????????)
+            # messaggio arriva ma non vede l'api key e non fa partire il metodo
         if data != None:
             try:
                 apiKey = json.getValue(data,"init")
                 await websocket.send_text(database.clientDB_init(apiKey))
             except:
                 pass
-
+            ##
   except WebSocketDisconnect:
       active_connections[user_id].remove(websocket)
       pass
