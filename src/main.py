@@ -9,7 +9,7 @@ from typing import Dict, List
 import db.database as database
 import db.object as object
 from security.encrypter import generate_hash
-from logger.logger import logAPIRequest, logWSConnection, toConsole
+from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage
 
 app = FastAPI()
 
@@ -64,6 +64,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   try:
     while True:
         data = await websocket.receive_text()
+        logWSMessage(user_id,"Message: "+data)
         print("DATI RICEVUTI DA WEBSOCKET"+user_id+" :"+data)
         try:
             apiKey = data["init"]

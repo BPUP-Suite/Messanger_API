@@ -20,6 +20,10 @@ def logAPIRequest(username,resource,value):
 def logWSConnection(user_id,wb_counter,message):
     text = f"WB -> {message} -> {user_id} ({wb_counter} wb attivi!)"
     toConsole(text)
+    
+def logWSMessage(user_id,data):
+    text = f"WB -> {user_id} -> {data}"
+    toConsole(text)
 
 def fromDatabase(text):
     toConsole("DATABASE: "+text)
