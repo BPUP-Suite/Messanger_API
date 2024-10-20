@@ -64,7 +64,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   try:
     while True:
         data = await websocket.receive_text()
-
+        print("DATI RICEVUTI DA WEBSOCKET"+user_id+" :"+data)
         try:
             apiKey = data["init"]
             if apiKey != None:
