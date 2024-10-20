@@ -13,6 +13,7 @@ from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessag
 
 app = FastAPI()
 
+toConsole("----------------------------------------------------------")
 toConsole("API started!")
 
 if not(database.exist()):
