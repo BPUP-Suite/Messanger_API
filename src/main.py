@@ -10,6 +10,7 @@ import db.database as database
 import db.object as object
 from security.encrypter import generate_hash
 from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage
+import db.jsonBuilder as json
 
 app = FastAPI()
 
@@ -67,12 +68,13 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
         data = await websocket.receive_text()
         logWSMessage(user_id,"Message: "+data)
         print("DATI RICEVUTI DA WEBSOCKET"+user_id+" :"+data)
-        try:
-            apiKey = data["init"]
-            if apiKey != None:
+        
+        if data != None:
+            try:
+                apiKey = json.getValue(data,"init")
                 await websocket.send_text(database.clientDB_init(apiKey))
-        except:
-            pass
+            except:
+                pass
 
   except WebSocketDisconnect:
       active_connections[user_id].remove(websocket)

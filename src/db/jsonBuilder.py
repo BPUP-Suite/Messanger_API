@@ -106,3 +106,8 @@ def init_json(handle,email,name,surname,chats,groups,channels):
     jsonMessage +="}"
 
     return json.dumps(jsonMessage).replace("\\","")
+
+def getValue(data,title):
+
+    jsonData = json.dumps(data)
+    return jsonData[title]
