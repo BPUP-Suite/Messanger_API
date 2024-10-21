@@ -109,5 +109,5 @@ def init_json(handle,email,name,surname,chats,groups,channels):
 
 def getValue(data,title):
 
-    jsonData = json.dumps(data)
+    jsonData = json.loads(data)
     return jsonData[title]
