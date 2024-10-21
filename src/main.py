@@ -42,9 +42,6 @@ async def main(user_id:str,message:str): # 1000000000000000000
 
 @app.websocket("/ws/{user_id}/{api_key}")
 
-# IF WEBSOCKET CLOSED THEN DESTROY IT IN THE ARRAY (????)
-# IF WEBSOCKET DOESNT EXIST CRASH
-
 async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # user_id used for connection, api_key to check if user is valid
 
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
@@ -66,18 +63,27 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   try:
     while True:
         data = await websocket.receive_text()
-        logWSMessage(user_id,"Message: "+data)
-        print("DATI RICEVUTI DA WEBSOCKET"+user_id+" :"+data)
 
-            # TO FIX MISSING VALUE (????????)
-            # messaggio arriva ma non vede l'api key e non fa partire il metodo
         if data != None:
+
+            logWSMessage(user_id,"Message: "+data)
+
             try:
-                apiKey = json.getValue(data,"init")
-                await websocket.send_text(database.clientDB_init(apiKey))
+                type = json.getValue(data,"type")
+                if(type == "init"):
+                    apiKey = json.getValue(data,"apiKey")
+
+                    response = database.clientDB_init(apiKey)
+                
+                if(type == "send_message"):
+                    pass
+
+                logWSMessage(user_id,"Risposta inviata: "+response+" \n Per richiesta: "+data)
+                await websocket.send_text(response)
             except:
+                logWSMessage(user_id,"Messaggio invalido: "+data)
                 pass
-            ##
+
   except WebSocketDisconnect:
       active_connections[user_id].remove(websocket)
       pass
@@ -165,7 +171,7 @@ async def main(handle:str):
 @app.get("/user/action/send-message")
 async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
 
-    ## DB INFO
+    ## DB INFO (da aggiornare)
 
 #   message_id bigint NOT NULL,                     generated in database
 #   chat_id bigint NOT NULL,                        from API request
