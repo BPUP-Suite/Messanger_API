@@ -427,7 +427,7 @@ def send_message(message,receiverPC):
 
     chat_id = message.chat_id
     text = message.text
-    sender = message.sender # handle
+    sender = message.sender # user_id
     date = message.date
 
     type = chat_type_fromChatID(chat_id) # Check what type of chat we need to send message
@@ -439,6 +439,7 @@ def send_message(message,receiverPC):
 
 
     receiver = []
+    receiver.append(sender)
 
     if(type == "chat"):
 

@@ -111,3 +111,7 @@ def getValue(data,title):
 
     jsonData = json.loads(data)
     return jsonData[title]
+
+def dumps(string):
+
+    return json.dumps(string)

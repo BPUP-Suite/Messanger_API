@@ -70,16 +70,42 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
             try:
                 type = json.getValue(data,"type")
+                # togli api key check e usa lo user id della socket
                 if(type == "init"):
                     apiKey = json.getValue(data,"apiKey")
 
                     response = database.clientDB_init(apiKey)
                 
                 if(type == "send_message"):
-                    pass
+
+                    response = json.dumps('{"send_message":"false"}')
+                    
+                    chat_id = json.getValue(data,"chat_id")
+                    text = json.getValue(data,"text")
+                    receiver = json.getValue(data,"receiver")
+
+                    message = object.Message(chat_id,text,user_id,"")
+
+                    json_message,receivers = database.send_message(message,receiver)
+
+                    if(json_message != False):
+
+                        # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
+
+                        for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
+                            try:
+                                for connection in active_connections[receiver]:
+                                    if connection != websocket:
+                                        await connection.send_text(json_message)
+                            except:
+                                print("No users active for "+receiver) 
+                            
+                            response = json.dumps(f'{"send_message":"true","date":{message.date}}')
+
 
                 logWSMessage(user_id,"Risposta inviata: "+response+" \n Per richiesta: "+data)
                 await websocket.send_text(response)
+
             except:
                 logWSMessage(user_id,"Messaggio invalido: "+data)
                 pass
@@ -88,7 +114,6 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
       active_connections[user_id].remove(websocket)
       pass
 
-# DA VEDERE SE CAMBIARE METODO DI SEND DEI MESSAGGI DA RICHIESTA API A MANDARLO DIRETTAMENTANTE ATTRAVERLO LA WEBSOCKET
 
 ###
 #DISCONNETTI DA TUTTE LE WEBSOCKET ALLO SHUTDOWN
