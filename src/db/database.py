@@ -464,6 +464,7 @@ def send_message(message,receiverPC):
     logger.fromDatabase(QUERY)
 
     try:
+        message_id="TBD"  # DA IMPLEMENTARE IL RITORNO DELL'ID
         cursor.execute(QUERY)
         conn.commit()
     except:
@@ -479,7 +480,7 @@ def send_message(message,receiverPC):
 
     ## THIRD PHASE: RETURN ALL TO MAIN AND SENDS MESSAGES TO ALL 
 
-    return json_message,receiver
+    return message_id,json_message,receiver
 
 
 def create_personalChat(sender,receiver):

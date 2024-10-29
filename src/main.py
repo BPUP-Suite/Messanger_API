@@ -71,11 +71,14 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
             try:
                 type = json.getValue(data,"type")
                 # togli api key check e usa lo user id della socket
+
+                # INITIALIZE CLIENT DATABASE
                 if(type == "init"):
                     apiKey = json.getValue(data,"apiKey")
 
                     response = database.clientDB_init(apiKey)
                 
+                # SEND MESSAGE TO EVERY SENDER AND RECEIVER DEVICES
                 if(type == "send_message"):
 
                     response = json.dumps('{"send_message":"false"}')
@@ -86,7 +89,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                     message = object.Message(chat_id,text,user_id,"")
 
-                    json_message,receivers = database.send_message(message,receiver)
+                    message_id,json_message,receivers = database.send_message(message,receiver)
 
                     if(json_message != False):
 
@@ -100,8 +103,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             except:
                                 print("No users active for "+receiver) 
                             
-                            response = json.dumps(f'{"send_message":"true","date":{message.date}}')
-
+                            response = json.dumps(f'{"send_message":"true","date":{message.date},"message_id":{message.id}}')
 
                 logWSMessage(user_id,"Risposta inviata: "+response+" \n Per richiesta: "+data)
                 await websocket.send_text(response)
@@ -192,6 +194,42 @@ async def main(handle:str):
     return {type: confirmation}
 
 
+@app.get("/user/action/get-user-id")
+async def main(api_key:str):
+
+    type = "user-id"
+
+    handle = check_api_key(api_key)
+    
+    userID = database.user_group_channel_fromHandle_toID(handle)
+
+    logAPIRequest(handle,type,userID)
+
+    return {type: userID}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################## DA ELIMINARE
 
 @app.get("/user/action/send-message")
 async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
@@ -244,20 +282,6 @@ async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
 
     #return {type:confirmation}
     return json_message
-
-
-@app.get("/user/action/get-user-id")
-async def main(api_key:str):
-
-    type = "user-id"
-
-    handle = check_api_key(api_key)
-    
-    userID = database.user_group_channel_fromHandle_toID(handle)
-
-    logAPIRequest(handle,type,userID)
-
-    return {type: userID}
 
 
 # NOT NEEDED

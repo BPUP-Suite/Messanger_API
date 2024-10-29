@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres
-    container_name: local_pgdb
+    container_name: local_pgdb #use env variable
     restart: always
     ports:
       - 5432:5432
@@ -10,7 +10,7 @@ services:
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready","-d","${POSTGRES_DB}","-h","db","-U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5

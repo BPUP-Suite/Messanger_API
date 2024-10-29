@@ -3,5 +3,5 @@
 docker-compose build
 docker-compose up -d
 
-sleep 5
+sleep 10
 docker logs messanger_api-api-1
