@@ -105,6 +105,30 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             
                             response = json.dumps(f'{"send_message":"true","date":{message.date},"message_id":{message.id}}')
 
+                # ACK (?) (NOT-TESTED) #confirm read of messages
+                if(type == "ack"):
+                    response = json.dumps('{"ack":"true"}')
+
+                    message_id = json.getValue(data,"message_id")
+                     
+                     # datetime needed ??
+                    
+                    json_message,receivers = database.ack(user_id,message_id)
+
+                    if(json_message != False):
+
+                        ### MOVE IN A METHOD
+                        # SEND ACK TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
+
+                        for receiver in receivers:
+                            try:
+                                for connection in active_connections[receiver]:
+                                    if connection != websocket:
+                                        await connection.send_text(json_message)
+                            except:
+                                print("No users active for "+receiver) 
+
+
                 logWSMessage(user_id,"Risposta inviata: "+response+" \n Per richiesta: "+data)
                 await websocket.send_text(response)
 

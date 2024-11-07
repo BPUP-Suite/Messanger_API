@@ -115,3 +115,101 @@ def getValue(data,title):
 def dumps(string):
 
     return json.dumps(string)
+
+
+def messaged(message_id,text,sender,date):
+
+    dict ={
+        "message_id":message_id,
+        "text":text,
+        "sender":sender,
+        "date":date
+    }
+
+    return dict
+
+def chatd(chat_id,user,messages):
+
+    members = []
+    members.append(user)
+
+    return group_channeld(chat_id,"",members,messages)
+
+def localUserd(handle,email,name,surname):
+
+    dict={
+        "hanle":handle,
+        "email":email,
+        "name":name,
+        "surname":surname
+    }
+
+    return dict
+
+
+def group_channeld(chat_id,name,members,messages):
+
+    dict ={
+        "chat_id":chat_id,
+        "name":name
+    }
+
+    if len(members) != 0:
+
+        list = []
+
+        for member in members:
+            
+            dict_member ={
+                "handle":member
+            }
+            list.append(dict_member)
+
+        dict["users"] = list
+
+    if len(messages) != 0:
+
+        list = []
+
+        for messageObj in messages:
+            
+            dict_message = message(messageObj.message_id,messageObj.text,messageObj.sender,messageObj.date)
+
+            list.append(dict_message)
+
+        dict["messages"] = list
+
+    return dict
+
+def init_jsond(handle,email,name,surname,chats,groups,channels):
+
+    jsonMessage = "{"
+
+    # init initial message
+
+    jsonMessage +=f'"init":true,'
+
+    # local user
+
+    jsonMessage += '"localuser":'
+    jsonMessage += localUser(handle,email,name,surname)
+
+    # chat
+    
+    if len(chats) != 0:
+        jsonMessage += ','
+        jsonMessage += '"chats":'
+        first = True
+        for chatObj in chats:
+
+            if not first:
+                jsonMessage += ','
+            else:
+                first = False
+
+            jsonMessage += chat(chatObj.chat_id,chatObj.user,chatObj.messages)
+        jsonMessage +="}"
+
+    jsonMessage +="}"
+
+    return json.dumps(jsonMessage).replace("\\","")
