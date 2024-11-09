@@ -389,8 +389,10 @@ def has_user_access_to_chatID(sender,receiver,chat_id,type):
 
         if(result == None):
             
+            logger.fromDatabase("ChatID doesnt exist")
             # if it doesnt then creates it
             if(receiver != None):
+                logger.fromDatabase("Personal chat created")
                 return create_personalChat(sender,receiver)
             return False
 
@@ -432,8 +434,11 @@ def send_message(message,receiverPC):
     date = message.date
 
     type = chat_type_fromChatID(chat_id) # Check what type of chat we need to send message
-    chat_id = has_user_access_to_chatID(sender,receiverPC,chat_id,type) # check if user has access to chat, if its exists and tries to create it
 
+    logger.fromDatabase("Chat type: "+type)
+
+    chat_id = has_user_access_to_chatID(sender,receiverPC,chat_id,type) # check if user has access to chat, if its exists and tries to create it
+    
     if chat_id == False:  # Check if user can access chat messages
     
        return False,"Error",[]
