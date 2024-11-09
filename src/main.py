@@ -29,17 +29,6 @@ if not(database.exist()):
 
 active_connections: Dict[str, List[WebSocket]] = {} # array of active connection of every user
 
-@app.get("/test")
-async def main(user_id:str,message:str): # 1000000000000000000
-
-    try:
-        for connection in active_connections[user_id]:
-            await connection.send_text(message)
-    except:
-        pass
-
-    return {user_id:message}
-
 @app.websocket("/ws/{user_id}/{api_key}")
 
 async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # user_id used for connection, api_key to check if user is valid
@@ -255,6 +244,17 @@ async def main(api_key:str):
 
 ######################################################################## DA ELIMINARE
 
+@app.get("/test")
+async def main(user_id:str,message:str): # 1000000000000000000
+
+    try:
+        for connection in active_connections[user_id]:
+            await connection.send_text(message)
+    except:
+        pass
+
+    return {user_id:message}
+
 @app.get("/user/action/send-message")
 async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
 
@@ -408,6 +408,11 @@ async def main(api_key:str,file_id:str):
 
     headers = {'Content-Disposition': f'inline; filename={file.name}',"content-type": "application/octet-stream"}
     return Response(file.data,media_type=f'application/{file.type}',headers=headers)
+
+
+###############################################################################################
+
+
 
 # ADMIN REQUEST # 
 

@@ -1,7 +1,7 @@
 import json
+from typing import Dict, List
 
-
-def message(message_id,text,sender,date):
+def oldmessage(message_id,text,sender,date):
 
     jsonMessage = "{"
 
@@ -11,14 +11,14 @@ def message(message_id,text,sender,date):
 
     return json.dumps(jsonMessage)
 
-def chat(chat_id,user,messages):
+def oldchat(chat_id,user,messages):
 
     members = []
     members.append(user)
 
     return group_channel(chat_id,"",members,messages)
 
-def localUser(handle,email,name,surname):
+def oldlocalUser(handle,email,name,surname):
 
     jsonMessage = "{"
 
@@ -29,7 +29,7 @@ def localUser(handle,email,name,surname):
     return json.dumps(jsonMessage)
 
 
-def group_channel(chat_id,name,members,messages):
+def oldgroup_channel(chat_id,name,members,messages):
 
     jsonMessage = "{"
 
@@ -74,7 +74,7 @@ def group_channel(chat_id,name,members,messages):
 
     return json.dumps(jsonMessage)
 
-def init_json(handle,email,name,surname,chats,groups,channels):
+def oldinit_json(handle,email,name,surname,chats,groups,channels):
 
     jsonMessage = "{"
 
@@ -107,6 +107,9 @@ def init_json(handle,email,name,surname,chats,groups,channels):
 
     return json.dumps(jsonMessage).replace("\\","")
 
+
+########################## DA ELIMINARE SOPRA
+
 def getValue(data,title):
 
     jsonData = json.loads(data)
@@ -117,7 +120,7 @@ def dumps(string):
     return json.dumps(string)
 
 
-def messaged(message_id,text,sender,date):
+def message(message_id,text,sender,date):
 
     dict ={
         "message_id":message_id,
@@ -128,14 +131,14 @@ def messaged(message_id,text,sender,date):
 
     return dict
 
-def chatd(chat_id,user,messages):
+def chat(chat_id,user,messages):
 
     members = []
     members.append(user)
 
-    return group_channeld(chat_id,"",members,messages)
+    return group_channel(chat_id,"",members,messages)
 
-def localUserd(handle,email,name,surname):
+def localUser(handle,email,name,surname):
 
     dict={
         "hanle":handle,
@@ -147,7 +150,7 @@ def localUserd(handle,email,name,surname):
     return dict
 
 
-def group_channeld(chat_id,name,members,messages):
+def group_channel(chat_id,name,members,messages):
 
     dict ={
         "chat_id":chat_id,
@@ -181,35 +184,24 @@ def group_channeld(chat_id,name,members,messages):
 
     return dict
 
-def init_jsond(handle,email,name,surname,chats,groups,channels):
+def init_json(handle,email,name,surname,chats,groups,channels):
 
-    jsonMessage = "{"
+    dict ={
+        "init":"true"
+    }
 
-    # init initial message
-
-    jsonMessage +=f'"init":true,'
-
-    # local user
-
-    jsonMessage += '"localuser":'
-    jsonMessage += localUser(handle,email,name,surname)
+    dict["localuser"] = localUser(handle,email,name,surname)
 
     # chat
     
     if len(chats) != 0:
-        jsonMessage += ','
-        jsonMessage += '"chats":'
-        first = True
+        list = []
+
         for chatObj in chats:
 
-            if not first:
-                jsonMessage += ','
-            else:
-                first = False
+            dict_chat = chat(chatObj.chat_id,chatObj.user,chatObj.messages)
+            list.append(dict_chat)
 
-            jsonMessage += chat(chatObj.chat_id,chatObj.user,chatObj.messages)
-        jsonMessage +="}"
+        dict["chat"] = list
 
-    jsonMessage +="}"
-
-    return json.dumps(jsonMessage).replace("\\","")
+    return dict

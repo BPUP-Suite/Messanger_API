@@ -16,6 +16,7 @@ POSTGRESQL_PORT = envManager.read_postgresql_port()
 
 conn = psycopg2.connect(dbname=POSTGRESQL_DB, user=POSTGRESQL_USER, password=POSTGRESQL_PASSWORD, host=POSTGRESQL_HOST, port=POSTGRESQL_PORT) 
 
+
 def exist():
     
     cursor = conn.cursor()
@@ -121,11 +122,11 @@ def clientDB_init(api_key):
         cursor.close()
         return "{'init':'false'}"
 
-    # get groups information
+    # get groups information TDB
 
     groups = []
 
-    # get channels information
+    # get channels information TDB
 
     channels = []
 
