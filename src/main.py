@@ -122,7 +122,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
 
                 logWSMessage(user_id,"Risposta inviata: "+json.dumps(response)+" \n Per richiesta: "+json.dumps(data))
-                await websocket.send_text(response)
+                await websocket.send_text(json.dumps(response))
 
             except Exception as e:
                 logWSMessage(user_id,"Messaggio invalido: "+json.dumps(data)+" || con errore: "+str(traceback.format_exc()))
