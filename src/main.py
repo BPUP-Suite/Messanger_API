@@ -95,7 +95,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             except:
                                 print("No users active for "+receiver) 
                             
-                            response = {"send_message":True,"date":message.date,"message_id":message_id}
+                            response = {"send_message":True,"date":str(message.date),"message_id":message_id}
 
                 # ACK (?) (NOT-TESTED) #confirm read of messages
                 if(type == "ack"):
