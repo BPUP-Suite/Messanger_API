@@ -317,6 +317,30 @@ def check_userExistence_fromHandle(handle):
 
     return confirmation
 
+def check_userExistence_fromUserID(user_id):
+
+    cursor = conn.cursor()
+
+    confirmation = True
+
+    QUERY = f"SELECT user_id FROM public.users WHERE user_id = '{user_id}'"
+
+    logger.fromDatabase(QUERY)
+
+    cursor.execute(QUERY)
+
+    # fetch database for user_id (it should only be 1)
+    result = cursor.fetchone()
+
+    if result == None:
+        confirmation = False
+    
+    cursor.close()
+
+    # true: user exists | false: user doesnt exist
+
+    return confirmation
+
 def user_login_check(loginUser):
 
     email = loginUser.email
@@ -494,7 +518,7 @@ def create_personalChat(sender,receiver):
     cursor = conn.cursor()
 
     # check if both users exist
-    if not (check_userExistence_fromHandle(sender) & check_userExistence_fromHandle(receiver)):
+    if not (check_userExistence_fromUserID(sender) & check_userExistence_fromUserID(receiver)):
         return False
 
     ## ADD CHAT TO DB
