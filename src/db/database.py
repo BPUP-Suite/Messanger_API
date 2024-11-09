@@ -489,14 +489,17 @@ def send_message(message,receiverPC):
 
     cursor = conn.cursor()
 
-    QUERY = f"INSERT INTO public.messages (chat_id,text,sender,date) VALUES ({chat_id},'{text}','{sender}','{date}')" 
+    QUERY = f"INSERT INTO public.messages (chat_id,text,sender,date) VALUES ({chat_id},'{text}','{sender}','{date}'); SELECT currval(pg_get_serial_sequence('public.messages','message_id'));" 
 
     logger.fromDatabase(QUERY)
+    message_id = False
 
     try:
-        message_id="TBD"  # DA IMPLEMENTARE IL RITORNO DELL'ID
         cursor.execute(QUERY)
         conn.commit()
+        result = cursor.fetchone()
+        message_id = result[0]
+
     except:
         conn.rollback()
         cursor.close()
