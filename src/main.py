@@ -70,7 +70,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 # SEND MESSAGE TO EVERY SENDER AND RECEIVER DEVICES
                 if(type == "send_message"):
 
-                    response = json.dumps('{"send_message":"false"}')
+                    response = {"send_message":False}
                     
                     chat_id = json.getValue(data,"chat_id")
                     text = json.getValue(data,"text")
@@ -80,8 +80,6 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                     message_id,json_message,receivers = database.send_message(message,receiver)
 
-                    print(str(message_id),str(json_message),str(receivers))
-
                     if(message_id != False):
 
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
@@ -89,7 +87,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                         for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
                             try:
                                 for connection in active_connections[receiver]:
-                                    if connection != websocket:
+                                    if connection != websocket: 
+                                        logWSMessage(receiver,json_message)
                                         await connection.send_text(json_message)
                             except:
                                 print("No users active for "+receiver) 
