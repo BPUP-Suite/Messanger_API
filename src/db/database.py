@@ -435,10 +435,10 @@ def send_message(message,receiverPC):
 
     type = chat_type_fromChatID(chat_id) # Check what type of chat we need to send message
 
-    logger.fromDatabase("Chat type: "+type)
+    logger.fromDatabase("Chat type: "+str(type))
 
     chat_id = has_user_access_to_chatID(sender,receiverPC,chat_id,type) # check if user has access to chat, if its exists and tries to create it
-    
+
     if chat_id == False:  # Check if user can access chat messages
     
        return False,"Error",[]
