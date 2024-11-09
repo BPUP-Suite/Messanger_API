@@ -5,6 +5,7 @@ from fastapi.websockets import WebSocket,WebSocketDisconnect
 
 from security.auth import check_api_key
 from typing import Dict, List
+import traceback
 
 import db.database as database
 import db.object as object
@@ -47,7 +48,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
   await websocket.accept()
   logWSConnection(user_id,len(active_connections[user_id]),"Opened")
-  data = await websocket.send_text("Connessione al socket effettuata")
+
+  await websocket.send_text("Connessione al socket effettuata")
 
   try:
     while True:
@@ -123,7 +125,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 await websocket.send_text(response)
 
             except Exception as e:
-                logWSMessage(user_id,"Messaggio invalido: "+json.dumps(data)+" || con errore: "+str(e))
+                logWSMessage(user_id,"Messaggio invalido: "+json.dumps(data)+" || con errore: "+str(traceback.format_exc()))
                 pass
 
   except WebSocketDisconnect:
