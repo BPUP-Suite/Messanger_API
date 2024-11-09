@@ -22,7 +22,7 @@ def logWSConnection(user_id,wb_counter,message):
     toConsole(text)
     
 def logWSMessage(user_id,data):
-    text = f"WB -> {user_id} -> "+str(data)
+    text = f"WB -> {user_id} -> {data}"
     toConsole(text)
 
 def fromDatabase(text):

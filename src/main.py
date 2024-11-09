@@ -55,7 +55,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
         if data != None:
 
-            logWSMessage(user_id,"Message: "+data)
+            logWSMessage(user_id,"Message: "+json.dumps(data))
 
             try:
                 type = json.getValue(data,"type")
@@ -88,7 +88,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             try:
                                 for connection in active_connections[receiver]:
                                     if connection != websocket: 
-                                        logWSMessage(receiver,json_message)
+                                        logWSMessage(receiver,json.dumps(json_message))
                                         await connection.send_text(json_message)
                             except:
                                 print("No users active for "+receiver) 
@@ -119,11 +119,11 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                 print("No users active for "+receiver) 
 
 
-                logWSMessage(user_id,"Risposta inviata: "+str(response)+" \n Per richiesta: "+str(data))
+                logWSMessage(user_id,"Risposta inviata: "+json.dumps(response)+" \n Per richiesta: "+json.dumps(data))
                 await websocket.send_text(response)
 
             except Exception as e:
-                logWSMessage(user_id,"Messaggio invalido: "+str(data)+" || con errore: "+str(e))
+                logWSMessage(user_id,"Messaggio invalido: "+json.dumps(data)+" || con errore: "+str(e))
                 pass
 
   except WebSocketDisconnect:

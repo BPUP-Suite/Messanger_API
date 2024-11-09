@@ -115,9 +115,9 @@ def getValue(data,title):
     jsonData = json.loads(data)
     return jsonData[title]
 
-def dumps(string):
+def dumps(dict):
 
-    return json.dumps(string)
+    return json.dumps(dict)
 
 
 def message(message_id,text,sender,date):
