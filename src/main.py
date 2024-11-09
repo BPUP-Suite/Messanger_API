@@ -92,7 +92,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             except:
                                 print("No users active for "+receiver) 
                             
-                            response = json.dumps(f'{"send_message":"true","date":{message.date},"message_id":{message.id}}')
+                            response = {"send_message":True,"date":message.date,"message_id":message.id}
 
                 # ACK (?) (NOT-TESTED) #confirm read of messages
                 if(type == "ack"):
@@ -122,7 +122,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 await websocket.send_text(response)
 
             except Exception as e:
-                logWSMessage(user_id,"Messaggio invalido: "+data+" || con errore"+str(e))
+                logWSMessage(user_id,"Messaggio invalido: "+data+" || con errore: "+str(e))
                 pass
 
   except WebSocketDisconnect:

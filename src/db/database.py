@@ -436,7 +436,7 @@ def send_message(message,receiverPC):
 
     if chat_id == False:  # Check if user can access chat messages
     
-       return False,"Error"
+       return False,"Error",[]
 
 
     receiver = []
@@ -449,11 +449,11 @@ def send_message(message,receiverPC):
     if(type == "group"):
 
         # receiver array di persone
-        return False,"Not supported"
+        return False,"Not supported",[]
 
     if(type == "channel"):
 
-        return False,"Not supported"
+        return False,"Not supported",[]
     
 
     ## FIRST PHASE: ADD MESSAGE TO DB
