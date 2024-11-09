@@ -119,7 +119,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                 print("No users active for "+receiver) 
 
 
-                logWSMessage(user_id,"Risposta inviata: "+response+" \n Per richiesta: "+data)
+                logWSMessage(user_id,"Risposta inviata: "+str(response)+" \n Per richiesta: "+str(data))
                 await websocket.send_text(response)
 
             except Exception as e:
