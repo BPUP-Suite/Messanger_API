@@ -80,7 +80,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                     message_id,json_message,receivers = database.send_message(message,receiver)
 
-                    print(message_id+json_message+receivers)
+                    print(message_id+str(json_message)+receivers)
 
                     if(json_message != False):
 
