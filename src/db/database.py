@@ -465,7 +465,7 @@ def send_message(message,receiverPC):
 
     if chat_id == False:  # Check if user can access chat messages
     
-       return False,"Error",[]
+       return [False,"Error, cannot access chat",[]]
 
 
     receiver = []
@@ -478,11 +478,11 @@ def send_message(message,receiverPC):
     if(type == "group"):
 
         # receiver array di persone
-        return False,"Not supported",[]
+        return [False,"Not supported",[]]
 
     if(type == "channel"):
 
-        return False,"Not supported",[]
+        return [False,"Not supported",[]]
     
 
     ## FIRST PHASE: ADD MESSAGE TO DB
@@ -500,7 +500,7 @@ def send_message(message,receiverPC):
     except:
         conn.rollback()
         cursor.close()
-        return False
+        return [False,"Message_id not found",[]]
     
     cursor.close()
 
@@ -510,7 +510,7 @@ def send_message(message,receiverPC):
 
     ## THIRD PHASE: RETURN ALL TO MAIN AND SENDS MESSAGES TO ALL 
 
-    return message_id,json_message,receiver
+    return [message_id,json_message,receiver]
 
 
 def create_personalChat(sender,receiver):
