@@ -154,6 +154,8 @@ def get_userID_from_ApiKey(api_key):
         logger.fromDatabase("No API Key found!")
         cursor.close()
         return None
+    
+    return user_id
 
 def get_userHandle_from_apiKey(api_key):
 
