@@ -134,10 +134,7 @@ def clientDB_init(api_key):
 
     return jsonBuilder.init_json(handle,email,name,surname,chats,groups,channels)
 
-
-def get_userHandle_from_apiKey(api_key):
-
-    user_handle = None
+def get_userID_from_ApiKey(api_key):
 
     cursor = conn.cursor()
 
@@ -157,6 +154,12 @@ def get_userHandle_from_apiKey(api_key):
         logger.fromDatabase("No API Key found!")
         cursor.close()
         return None
+
+def get_userHandle_from_apiKey(api_key):
+
+    user_handle = None
+
+    user_id = get_userID_from_ApiKey(api_key)
 
     user_handle = user_group_channel_fromID_toHandle(user_id)
 

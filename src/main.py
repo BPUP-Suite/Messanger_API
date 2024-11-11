@@ -213,13 +213,11 @@ async def main(handle:str):
 @app.get("/user/action/get-user-id")
 async def main(api_key:str):
 
-    type = "user-id"
-
-    handle = check_api_key(api_key)
+    type = "user_id"
     
-    userID = database.user_group_channel_fromHandle_toID(handle)
+    userID = database.get_userID_from_ApiKey(api_key)
 
-    logAPIRequest(handle,type,userID)
+    logAPIRequest(api_key,type,userID)
 
     return {type: userID}
 
