@@ -161,6 +161,9 @@ def get_userHandle_from_apiKey(api_key):
 
     user_id = get_userID_from_ApiKey(api_key)
 
+    if user_id == None:
+        return None
+
     user_handle = user_group_channel_fromID_toHandle(user_id)
 
     # return handle to main (None = API_KEY non esiste [NON AUTORIZZATO] , negli altri casi ritorna l`handle dello user che ha eseguito la richiesta [viene anche utilizzato per il log] )
