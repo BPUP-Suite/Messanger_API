@@ -80,7 +80,7 @@ def init_json(handle,email,name,surname,chats,groups,channels):
         "init":"true"
     }
 
-    dict["localuser"] = localUser(handle,email,name,surname)
+    dict["localUser"] = localUser(handle,email,name,surname)
 
     # chat
     

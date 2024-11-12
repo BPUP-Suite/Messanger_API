@@ -90,10 +90,10 @@ def clientDB_init(api_key):
         for rowChat in resultChat:
             chat_id = rowChat[0]
 
-            if rowChat[1] == handle:
-                user = rowChat[2]
+            if rowChat[1] == user_id:
+                user = user_group_channel_fromID_toHandle(rowChat[2])
             else:
-                user = rowChat[1]
+                user = user_group_channel_fromID_toHandle(rowChat[1])
             
             # get messages info
 
