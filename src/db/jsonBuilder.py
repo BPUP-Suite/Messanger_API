@@ -77,6 +77,7 @@ def group_channel(chat_id,name,members,messages):
 def init_json(handle,email,name,surname,chats,groups,channels):
 
     dict ={
+        'type':'init',
         "init":"true"
     }
 

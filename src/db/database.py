@@ -45,7 +45,7 @@ def init(): # init del database
 
 def clientDB_init(api_key):
 
-    response = {'init':'false'}
+    response = {'type':'init','init':'false'}
     handle = get_userHandle_from_apiKey(api_key)
 
     if handle == None:
