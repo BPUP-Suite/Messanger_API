@@ -31,7 +31,7 @@ def chat(chat_id,user,messages):
 def localUser(handle,email,name,surname):
 
     dict={
-        "hanle":handle,
+        "handle":handle,
         "email":email,
         "name":name,
         "surname":surname
@@ -92,6 +92,6 @@ def init_json(handle,email,name,surname,chats,groups,channels):
             dict_chat = chat(chatObj.chat_id,chatObj.user,chatObj.messages)
             list.append(dict_chat)
 
-        dict["chat"] = list
+        dict["chats"] = list
 
     return dict

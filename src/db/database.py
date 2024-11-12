@@ -45,10 +45,11 @@ def init(): # init del database
 
 def clientDB_init(api_key):
 
+    response = {'init':'false'}
     handle = get_userHandle_from_apiKey(api_key)
 
     if handle == None:
-        return "{'init':'false'}"
+        return response
     
     # get local user information
 
@@ -70,7 +71,7 @@ def clientDB_init(api_key):
 
     except:
         cursor.close()
-        return "{'init':'false'}"
+        return response
     
     # get chat information
 
@@ -78,7 +79,7 @@ def clientDB_init(api_key):
 
     cursor = conn.cursor()
 
-    QUERY = f"SELECT chat_id,user1,user2 FROM public.chats WHERE user1='{handle}' OR user2='{handle}'"
+    QUERY = f"SELECT chat_id,user1,user2 FROM public.chats WHERE user1='{user_id}' OR user2='{user_id}'"
     
     try:
         logger.fromDatabase(QUERY)
@@ -113,14 +114,14 @@ def clientDB_init(api_key):
             
             except:
                 cursor.close()
-                return "{'init':'false'}"
+                return response
 
             chat = object.ChatJson(chat_id,user,messages)
             chats.append(chat)
 
     except:
         cursor.close()
-        return "{'init':'false'}"
+        return response
 
     # get groups information TDB
 
