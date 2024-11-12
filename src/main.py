@@ -61,12 +61,11 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
             try:
                 type = json.getValue(data,"type")
-                logWSMessage(user_id,data)
+
                 # togli api key check e usa lo user id della socket
 
                 # INITIALIZE CLIENT DATABASE
                 if(type == "init"):
-                    logWSMessage(user_id,data)
 
                     apiKey = json.getValue(data,"apiKey")
 
@@ -74,8 +73,6 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 
                 # SEND MESSAGE TO EVERY SENDER AND RECEIVER DEVICES
                 if(type == "send_message"):
-
-                    logWSMessage(user_id,data)
 
                     response = {"send_message":False}
                     
