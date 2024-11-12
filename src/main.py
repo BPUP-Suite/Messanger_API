@@ -85,7 +85,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     message_id,json_message,receivers = database.send_message(message,receiverHandle)
 
                     if(message_id != False):
-
+                        print("DFSSDFSDFDFS")
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
                         print("KOSKDFSKDFSDFS"+str(receivers))
                         for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
