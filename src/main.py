@@ -1,9 +1,9 @@
 # START COMMAND: uvicorn main:app --reload
 
-from fastapi import FastAPI, File, UploadFile, Response
+from fastapi import FastAPI
 from fastapi.websockets import WebSocket,WebSocketDisconnect
 
-from security.auth import check_api_key
+from security.auth import check_api_key # remove (api used only in socket)
 from typing import Dict, List
 import traceback
 
@@ -24,6 +24,7 @@ if not(database.exist()):
     toConsole("Database created!")
 
 # get /docs for all request documentation
+# da fare i docs relativi ai sockets
 
 
 # WEB SOCKET MANAGER
@@ -214,6 +215,8 @@ async def main(handle:str):
 
 @app.get("/user/action/get-user-id")
 async def main(api_key:str):
+
+    # no api check needed
 
     type = "user_id"
     
