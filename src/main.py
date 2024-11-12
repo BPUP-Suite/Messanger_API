@@ -78,16 +78,16 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     
                     chat_id = json.getValue(data,"chat_id")
                     text = json.getValue(data,"text")
-                    receiver = json.getValue(data,"receiver")
+                    receiverHandle = json.getValue(data,"receiver")
 
                     message = object.Message(chat_id,text,user_id,None)
 
-                    message_id,json_message,receivers = database.send_message(message,receiver)
+                    message_id,json_message,receivers = database.send_message(message,receiverHandle)
 
                     if(message_id != False):
 
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
-
+                        print(str(receivers))
                         for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
                             try:
                                 for connection in active_connections[receiver]:
