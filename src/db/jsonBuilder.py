@@ -126,7 +126,7 @@ def message(message_id,text,sender,date):
         "message_id":message_id,
         "text":text,
         "sender":sender,
-        "date":str(date)
+        "date":date
     }
 
     return dict
