@@ -89,6 +89,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
                         print("KOSKDFSKDFSDFS"+str(receivers))
                         for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
+                            print("TOCCA TE "+str(receiver))
                             try:
                                 for connection in active_connections[receiver]:
                                     if connection != websocket: 
@@ -97,7 +98,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             except:
                                 print("No users active for "+receiver) 
                             
-                            response = {"send_message":True,"date":str(message.date),"message_id":message_id}
+                        response = {"send_message":True,"date":str(message.date),"message_id":message_id}
 
                 # ACK (?) (NOT-TESTED) #confirm read of messages
                 if(type == "ack"):
