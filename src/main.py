@@ -10,7 +10,7 @@ import traceback
 import db.database as database
 import db.object as object
 from security.encrypter import generate_hash
-from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage
+from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage, logDebug
 import db.jsonBuilder as json
 
 app = FastAPI()
@@ -85,18 +85,18 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     message_id,json_message,receivers = database.send_message(message,receiverHandle)
 
                     if(message_id != False):
-                        print("DFSSDFSDFDFS")
+                        logDebug("DFSSDFSDFDFS")
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
-                        print("KOSKDFSKDFSDFS"+str(receivers))
+                        logDebug("KOSKDFSKDFSDFS"+str(receivers))
                         for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
-                            print("TOCCA TE "+str(receiver))
+                            logDebug("TOCCA TE "+str(receiver))
                             try:
                                 for connection in active_connections[receiver]:
                                     if connection != websocket: 
                                         logWSMessage(receiver,json.dumps(json_message))
                                         await connection.send_text(json_message)
                             except:
-                                print("No users active for "+receiver) 
+                                logDebug("No users active for "+receiver) 
                             
                         response = {"send_message":True,"date":str(message.date),"message_id":message_id}
 
@@ -121,7 +121,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                     if connection != websocket:
                                         await connection.send_text(json_message)
                             except:
-                                print("No users active for "+receiver) 
+                                logDebug("No users active for "+receiver) 
 
 
                 logWSMessage(user_id,"Risposta inviata: "+json.dumps(response)+" \n Per richiesta: "+json.dumps(data))
@@ -294,7 +294,7 @@ async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
                 for connection in active_connections[receiver]:
                     await connection.send_text(json_message)
             except:
-                print("No users active for "+receiver)
+                logDebug("No users active for "+receiver)
 
         # SEND MESSAGE TO OTHER SENDER CLIENT
 
@@ -302,7 +302,7 @@ async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
             for connection in active_connections[handle]:
                 await connection.send_text(json_message)   
         except:
-            print("No users active for "+handle)   
+            logDebug("No users active for "+handle)   
 
         confirmation = True
 

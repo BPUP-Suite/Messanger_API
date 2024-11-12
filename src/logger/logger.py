@@ -27,3 +27,6 @@ def logWSMessage(user_id,data):
 
 def fromDatabase(text):
     toConsole("DATABASE: "+text)
+
+def logDebug(text):
+    toConsole("######## DEBUG INFO"+text)
