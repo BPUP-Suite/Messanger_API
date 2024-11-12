@@ -467,7 +467,7 @@ def send_message(message,receiverPC):
     chat_id = message.chat_id
     text = message.text
     sender = message.sender # user_id
-    date = str(message.date)
+    date = message.date
 
     receiverID = user_group_channel_fromHandle_toID(receiverPC)
 
