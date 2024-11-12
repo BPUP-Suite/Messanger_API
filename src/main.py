@@ -85,18 +85,17 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     message_id,json_message,receivers = database.send_message(message,receiverHandle)
 
                     if(message_id != False):
-                        logDebug("DFSSDFSDFDFS")
+
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
-                        logDebug("KOSKDFSKDFSDFS"+str(receivers))
+
                         for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
-                            logDebug("TOCCA TE "+str(receiver))
                             try:
                                 for connection in active_connections[receiver]:
                                     if connection != websocket: 
-                                        logWSMessage(receiver,json.dumps(json_message))
+                                        logWSMessage(receiver,str(json_message))
                                         await connection.send_text(json.dumps(json_message))
                             except Exception as e:
-                                logDebug("No users active for "+receiver+"ERRORE  "+str(traceback.format_exc())) 
+                                logDebug("No users active for "+receiver+" or error: "+str(traceback.format_exc())) 
                             
                         response = {"send_message":True,"date":str(message.date),"message_id":message_id}
 
@@ -225,199 +224,6 @@ async def main(api_key:str):
     return {type: userID}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-######################################################################## DA ELIMINARE
-
-@app.get("/test")
-async def main(user_id:str,message:str): # 1000000000000000000
-
-    try:
-        for connection in active_connections[user_id]:
-            await connection.send_text(message)
-    except:
-        pass
-
-    return {user_id:message}
-
-@app.get("/user/action/send-message")
-async def main(api_key:str,chat_id:str,text:str,receiver: str | None = None):
-
-    ## DB INFO (da aggiornare)
-
-#   message_id bigint NOT NULL,                     generated in database
-#   chat_id bigint NOT NULL,                        from API request
-#   text text NOT NULL,                             from API request
-#   sender bigint NOT NULL,                         from api_key for API request
-#   date timestamp without time zone NOT NULL,      generated in databse
-
-    ##
-
-    ## tries to create chat if chat_id doesnt exist (and is a personal chat, chat id for personal chat always starts with "2")
-
-    # API CHECK
-
-    handle = check_api_key(api_key)
-
-    type = "send_message"
-    confirmation = False
-
-    message = object.Message(chat_id,text,handle,"")
-
-    json_message,receivers = database.send_message(message,receiver)
-
-    if(json_message != False):
-
-        # SEND MESSAGE TO RECEIVER CLIENT
-
-        for receiver in receivers:
-            try:
-                for connection in active_connections[receiver]:
-                    await connection.send_text(json_message)
-            except:
-                logDebug("No users active for "+receiver)
-
-        # SEND MESSAGE TO OTHER SENDER CLIENT
-
-        try:
-            for connection in active_connections[handle]:
-                await connection.send_text(json_message)   
-        except:
-            logDebug("No users active for "+handle)   
-
-        confirmation = True
-
-    logAPIRequest(handle,type,confirmation)
-
-    #return {type:confirmation}
-    return json_message
-
-
-# NOT NEEDED
-@app.get("/chat/create/personal-chat")
-async def main(api_key:str,receiver:str):
-
-    ## DB INFOSELECT currval(pg_get_serial_sequence('persons','id'));
-
-#   chat_id bigint NOT NULL,                        generated based on both users handles 
-#                                                   example:  sender: giorgio  receiver: antonio  chat_id = giorgio-antonio
-
-    ##
-
-    # API CHECK
-
-    handle = check_api_key(api_key)
-
-    type = "create_personal-chat"
-    confirmation = False
-
-    ### CHECK IF RECEIVER IS AN HANDLE OR A USER ID 
-
-    ## WE NEED HANDLE NOT USERID
-
-    chat = object.Chat(handle,receiver)
-    confirmation = database.create_personalChat(chat)
-
-    logAPIRequest(handle,type,confirmation)
-
-    return {type: confirmation}
-
-@app.get("/test2")
-async def main(api_key:str):
-    return database.clientDB_init(api_key)
-
-@app.get("/chat/create/group")
-async def main(api_key:str,name:str,description:str):
-
-    ## DB INFO  
-
-    # chat_id bigint NOT NULL,                generated in db
-    # members bigint[] NOT NULL,              first element is user_id from api_key (api_key->handle->user_id)
-    # admins bigint[] NOT NULL,               //
-    # description text,                       from request
-    # group_picture_id bigint[]               ????? da rivedere
-
-    # API CHECK
-
-    handle = check_api_key(api_key)
-
-    type = "create-group"
-    confirmation = False
-
-    group = object.Group(handle,name,description)
-    confirmation = database.create_group(group)
-
-    logAPIRequest(handle,type,confirmation)
-
-    return {type: confirmation}
-
-@app.get("/upload")
-async def main(api_key:str,type:str,fileA: UploadFile = File(...)):  # da sostituire type con utilizzo delle cartelle
-
-    # API CHECK
-
-    handle = check_api_key(api_key)
-
-    type="upload"+type
-    confirmation = False
-
-    file = object.File(handle,type,fileA)
-    confirmation = database.upload_file(file)
-
-    logAPIRequest(handle,type,confirmation)
-
-    return {type: confirmation}
-
-@app.get("/download")
-async def main(api_key:str,file_id:str):
-
-    #DB INFO
-
-    # API CHECK
-
-    handle = check_api_key(api_key)
-
-    type="download"
-
-    ##DA VEDERE SE UTENTE HA ACCESSO AL FILE (è nel canale/gruppo/chat da cui deriva) fatto nella classe database
-    file = database.download_file(handle,file_id) # file
-
-    ## test download file
-    #handle="test"
-    #with open("requirements.txt","r") as filez:
-    #        data = filez.read()
-    #file = object.FileDownload(data,"test","txt")
-    ##
-
-    logAPIRequest(handle,type,file!=None)
-
-    headers = {'Content-Disposition': f'inline; filename={file.name}',"content-type": "application/octet-stream"}
-    return Response(file.data,media_type=f'application/{file.type}',headers=headers)
-
-
-###############################################################################################
-
-
-
 # ADMIN REQUEST # 
 
 
@@ -427,4 +233,4 @@ async def main(api_key:str,file_id:str):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000) # ADD POSSIBILITY TO CHANGE IP + PORT
+    uvicorn.run(app, host="0.0.0.0", port=8000) # ADD POSSIBILITY TO CHANGE IP + PORT FROM ENV FILE
