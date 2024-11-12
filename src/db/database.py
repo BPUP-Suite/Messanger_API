@@ -482,12 +482,13 @@ def send_message(message,receiverPC):
        return [False,"Error, cannot access chat",[]]
 
 
-    receiver = []
-    receiver.append(sender)
+    receivers = []
+    receivers.append(sender)
 
     if(type == "chat"):
 
-        receiver.append(get_receiver_personalChat(chat_id,sender))
+        #receivers.append(get_receiver_personalChat(chat_id,sender))
+        receivers.append(receiverID)
 
     if(type == "group"):
 
@@ -527,7 +528,7 @@ def send_message(message,receiverPC):
 
     ## THIRD PHASE: RETURN ALL TO MAIN AND SENDS MESSAGES TO ALL 
 
-    return [message_id,json_message,receiver]
+    return [message_id,json_message,receivers]
 
 
 def create_personalChat(sender,receiver):
