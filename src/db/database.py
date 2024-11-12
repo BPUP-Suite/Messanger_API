@@ -293,7 +293,9 @@ def check_userExistence_fromEmail(email):
 
     try:
         cursor.execute(QUERY)
-        cursor.fetchone()
+        result = cursor.fetchone()
+        if result == None:
+            confirmation = False
     except:
         confirmation = False
 
@@ -391,6 +393,7 @@ def user_login_check(loginUser):
                 confirmation = result[0]
 
     except Exception as e:
+        
         print("Errore"+str(e))
         return False
 
