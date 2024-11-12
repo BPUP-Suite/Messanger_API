@@ -52,7 +52,7 @@ def read_salt():
 
     # search for SALT file
     try:
-        with open("db/salt","r") as file:
+        with open("data/salt","r") as file:
             SALT = file.read()
     except:
         return False
@@ -65,7 +65,7 @@ def read_salt():
 def write_salt(SALT):
 
     # write SALT file
-    with open("db/salt","w+") as file: # create a file
+    with open("data/salt","w+") as file: # create a file
         file.write(str(SALT)) # writes a string
 
 ### SALT ###

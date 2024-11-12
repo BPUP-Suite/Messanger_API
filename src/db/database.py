@@ -259,6 +259,10 @@ def add_user_toDB(user): # aggiungi API key
 
     api_key = secrets.token_urlsafe(256)
 
+    #####################
+#   AGGIUNGI CONTROLLI PER OGNI PARAMETRO (no duplicazione)
+    ####################
+
     logger.fromDatabase("Check API duplicata...")
     while(get_userHandle_from_apiKey(api_key) != None): # check if api key is duplicated (i think its impossibile but, better safe than sorry)
         logger.fromDatabase("API Key duplicata, ne genero una nuova")
