@@ -50,7 +50,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   await websocket.accept()
   logWSConnection(user_id,len(active_connections[user_id]),"Opened")
 
-  await websocket.send_text("Connessione al socket effettuata")
+  #await websocket.send_text("Connessione al socket effettuata")
 
   try:
     while True:
