@@ -87,7 +87,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     if(message_id != False):
 
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
-                        print(str(receivers))
+                        print("KOSKDFSKDFSDFS"+str(receivers))
                         for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
                             try:
                                 for connection in active_connections[receiver]:
@@ -113,8 +113,6 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                         ### MOVE IN A METHOD
                         # SEND ACK TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
-
-                        print("KOSKDFSKDFSDFS"+str(receivers))
 
                         for receiver in receivers:
                             try:
