@@ -114,6 +114,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                         ### MOVE IN A METHOD
                         # SEND ACK TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
 
+                        print("KOSKDFSKDFSDFS"+str(receivers))
+
                         for receiver in receivers:
                             try:
                                 for connection in active_connections[receiver]:
