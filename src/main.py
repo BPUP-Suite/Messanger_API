@@ -95,8 +95,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                     if connection != websocket: 
                                         logWSMessage(receiver,json.dumps(json_message))
                                         await connection.send_text(json_message)
-                            except:
-                                logDebug("No users active for "+receiver) 
+                            except Exception as e:
+                                logDebug("No users active for "+receiver+"ERRORE  "+str(e)) 
                             
                         response = {"send_message":True,"date":str(message.date),"message_id":message_id}
 
