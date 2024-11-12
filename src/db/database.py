@@ -148,7 +148,7 @@ def get_userID_from_ApiKey(api_key):
         result = cursor.fetchone()
         cursor.close()
 
-        user_id = result[0]
+        user_id = str(result[0])
 
     except:
         logger.fromDatabase("No API Key found!")

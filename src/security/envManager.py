@@ -1,5 +1,7 @@
 import os
 
+SALT_PATH = "data/salt"
+
 def read_variable(name):
 
     VARIABLE = None
@@ -52,9 +54,10 @@ def read_salt():
 
     # search for SALT file
     try:
-        with open("data/salt","r") as file:
+        with open(SALT_PATH,"r") as file:
             SALT = file.read()
-    except:
+    except Exception as e:
+        print(str(e))
         return False
     
     if SALT is None:
@@ -65,7 +68,8 @@ def read_salt():
 def write_salt(SALT):
 
     # write SALT file
-    with open("data/salt","w+") as file: # create a file
-        file.write(str(SALT)) # writes a string
+    os.makedirs(os.path.dirname(SALT_PATH),exist_ok=True)
+    with open(SALT_PATH,"w+") as file: # create a file
+        file.write(SALT.decode("utf-8")) # writes a string
 
 ### SALT ###

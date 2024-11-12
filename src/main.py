@@ -217,7 +217,7 @@ async def main(api_key:str):
     
     userID = database.get_userID_from_ApiKey(api_key)
 
-    logAPIRequest(api_key,type,userID)
+    logAPIRequest(userID,type,userID)
 
     return {type: userID}
 
