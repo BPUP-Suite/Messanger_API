@@ -78,7 +78,7 @@ def init_json(handle,email,name,surname,chats,groups,channels):
 
     dict ={
         'type':'init',
-        "init":"true"
+        "init":"True"
     }
 
     dict["localUser"] = localUser(handle,email,name,surname)
