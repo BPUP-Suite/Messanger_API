@@ -291,13 +291,13 @@ def check_userExistence_fromEmail(email):
 
     logger.fromDatabase(QUERY)
 
-    cursor.execute(QUERY)
+    try:
+        cursor.execute(QUERY)
+        cursor.fetchone()
+    except:
+        confirmation = False
 
     # fetch database for e-mails (it should only be 1)
-    result = cursor.fetchone()
-
-    if result == None:
-        confirmation = False
     
     cursor.close()
 
@@ -367,27 +367,32 @@ def user_login_check(loginUser):
 
     logger.fromDatabase(QUERY)
 
-    cursor.execute(QUERY)
+    try:
+        cursor.execute(QUERY)
 
-    # fetch database for password (it should only be 1)
-    result = cursor.fetchone()
+        # fetch database for password (it should only be 1)
+        result = cursor.fetchone()
 
-    if result != None:
-        hash = result[1] # position 0: id_user | position 1: password_hash
-        if check_password_hash(password,hash):
-            
-            user_id = result[0]
-            # second query, find api key
-            QUERY = f"SELECT api_key FROM public.apiKeys WHERE user_id = '{user_id}'"
+        if result != None:
+            hash = result[1] # position 0: id_user | position 1: password_hash
+            if check_password_hash(password,hash):
+                
+                user_id = result[0]
+                # second query, find api key
+                QUERY = f"SELECT api_key FROM public.apiKeys WHERE user_id = '{user_id}'"
 
-            logger.fromDatabase(QUERY)
+                logger.fromDatabase(QUERY)
 
-            cursor.execute(QUERY)
+                cursor.execute(QUERY)
 
-            # fetch database for apikey (it should only be 1)
-            result = cursor.fetchone()
+                # fetch database for apikey (it should only be 1)
+                result = cursor.fetchone()
 
-            confirmation = result[0]
+                confirmation = result[0]
+
+    except Exception as e:
+        print("Errore"+str(e))
+        return False
 
     cursor.close()
 
