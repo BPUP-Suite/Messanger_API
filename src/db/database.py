@@ -483,12 +483,12 @@ def send_message(message,receiverPC):
 
 
     receivers = []
-    receivers.append(sender)
+    receivers.append(str(sender))
 
     if(type == "chat"):
 
         #receivers.append(get_receiver_personalChat(chat_id,sender))
-        receivers.append(receiverID)
+        receivers.append(str(receiverID))
 
     if(type == "group"):
 
