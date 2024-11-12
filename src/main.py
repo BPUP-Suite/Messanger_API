@@ -94,7 +94,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                 for connection in active_connections[receiver]:
                                     if connection != websocket: 
                                         logWSMessage(receiver,json.dumps(json_message))
-                                        await connection.send_text(json_message)
+                                        await connection.send_text(json.dumps(json_message))
                             except Exception as e:
                                 logDebug("No users active for "+receiver+"ERRORE  "+str(traceback.format_exc())) 
                             

@@ -19,7 +19,7 @@ class Message:
     self.text = text
     self.sender = sender
     if date == None:
-      self.date = str(datetime.now())
+      self.date = datetime.now()
     else:
       self.date = date
 
