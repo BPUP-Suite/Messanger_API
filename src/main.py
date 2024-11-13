@@ -61,7 +61,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
         if data != None:
 
-            logWSMessage(user_id,"Message: "+json.dumps(data))
+            logDebug(user_id+" -WS> "+json.dumps(data))
 
             try:
                 type = json.getValue(data,"type")
@@ -78,7 +78,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 # SEND MESSAGE TO EVERY SENDER AND RECEIVER DEVICES
                 if(type == "send_message"):
 
-                    response = {"send_message":False}
+                    response = {"type":"send_message,""send_message":False}
                     
                     chat_id = json.getValue(data,"chat_id")
                     text = json.getValue(data,"text")
@@ -86,22 +86,22 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                     message = object.Message(chat_id,text,user_id,None)
 
-                    message_id,json_message,receivers = database.send_message(message,receiverHandle)
+                    response_sender,response_receiver,receivers = database.send_message(message,receiverHandle)
 
                     if(message_id != False):
 
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
 
-                        for receiver in receivers: #da vedere se crasha se non c'è anche solo un receiver nella list
+                        for receiver in receivers:
                             try:
                                 for connection in active_connections[receiver]:
                                     if connection != websocket: 
-                                        logWSMessage(receiver,str(json_message))
-                                        await connection.send_text(json.dumps(json_message))
+                                        logWSMessage(receiver,str(response_receiver))
+                                        await connection.send_text(json.dumps(response_receiver))
                             except Exception as e:
                                 logDebug("No users active for "+receiver+" or error: "+str(traceback.format_exc())) 
-                            
-                        response = {"send_message":True,"date":str(message.date),"message_id":message_id}
+
+                        response = response_sender
 
                 # ACK (?) (NOT-TESTED) #confirm read of messages
                 if(type == "ack"):

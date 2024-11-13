@@ -530,13 +530,16 @@ def send_message(message,receiverPC):
     QUERY = f"INSERT INTO public.messages (chat_id,text,sender,date) VALUES ({chat_id},'{text}',{sender},'{date}'); SELECT currval(pg_get_serial_sequence('public.messages','message_id'));" 
 
     logger.fromDatabase(QUERY)
-    message_id = False
+    response_sender = False
 
     try:
         cursor.execute(QUERY)
         conn.commit()
         result = cursor.fetchone()
         message_id = result[0]
+
+        # create response for messages sender (with message_id and date saved in local db on client)
+        response_sender = {"type":"send_message","send_message":True,"date":str(date),"message_id":message_id}
 
     except:
         logger.logDebug(str(traceback.format_exc()))
@@ -548,11 +551,11 @@ def send_message(message,receiverPC):
 
     ## SECOND PHASE: CREATE JSON MESSAGE FOR RESPONSE
 
-    json_message = jsonBuilder.message(chat_id,text,sender,date)
+    response_receiver = jsonBuilder.message(message_id,chat_id,text,sender,date)
 
     ## THIRD PHASE: RETURN ALL TO MAIN AND SENDS MESSAGES TO ALL 
-
-    return [message_id,json_message,receivers]
+    
+    return [response_sender,response_receiver,receivers]
 
 
 def create_personalChat(sender,receiver):

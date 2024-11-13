@@ -10,10 +10,11 @@ def dumps(dict):
     return json.dumps(dict)
 
 
-def message(message_id,text,sender,date):
+def message(message_id,chat_id,text,sender,date):
 
     dict ={
         "message_id":message_id,
+        "chat_id":chat_id,
         "text":text,
         "sender":sender,
         "date":str(date)
