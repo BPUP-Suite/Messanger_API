@@ -42,10 +42,16 @@ def localUser(handle,email,name,surname):
 
 def group_channel(chat_id,name,members,messages):
 
-    dict ={
-        "chat_id":chat_id,
-        "name":name
-    }
+    if name == "":
+        dict ={
+            "chat_id":chat_id
+        }
+    else:
+        dict ={
+            "chat_id":chat_id,
+            "name":name
+        }
+
 
     if len(members) != 0:
 
