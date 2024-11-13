@@ -2,6 +2,8 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import secrets # api key
 
+import traceback
+
 import logger.logger as logger
 import security.envManager as envManager
 from security.encrypter import check_password_hash
@@ -70,6 +72,7 @@ def clientDB_init(api_key):
         surname = result[2]
 
     except:
+        logger.logDebug(str(traceback.format_exc()))
         cursor.close()
         return response
     
@@ -113,6 +116,7 @@ def clientDB_init(api_key):
                     messages.append(message)
             
             except:
+                logger.logDebug(str(traceback.format_exc()))
                 cursor.close()
                 return response
 
@@ -120,6 +124,7 @@ def clientDB_init(api_key):
             chats.append(chat)
 
     except:
+        logger.logDebug(str(traceback.format_exc()))
         cursor.close()
         return response
 
@@ -153,6 +158,7 @@ def get_userID_from_ApiKey(api_key):
 
     except:
         logger.fromDatabase("No API Key found!")
+        logger.logDebug(str(traceback.format_exc()))
         cursor.close()
         return None
     
@@ -222,6 +228,7 @@ def user_group_channel_fromHandle_toID(handle):
         elif result[2] != None: # channel_id
             return result[2]
     except:
+        logger.logDebug(str(traceback.format_exc()))
         return None
 
 
@@ -276,6 +283,7 @@ def add_user_toDB(user): # aggiungi API key
         cursor.execute(QUERY)
         conn.commit()
     except:
+        logger.logDebug(str(traceback.format_exc()))
         confirmation = False
     
     cursor.close()
@@ -298,6 +306,7 @@ def check_userExistence_fromEmail(email):
         if result == None:
             confirmation = False
     except:
+        logger.logDebug(str(traceback.format_exc()))
         confirmation = False
 
     # fetch database for e-mails (it should only be 1)
@@ -393,9 +402,9 @@ def user_login_check(loginUser):
 
                 confirmation = result[0]
 
-    except Exception as e:
-        
-        print("Errore"+str(e))
+    except:
+
+        logger.logDebug(str(traceback.format_exc()))
         return False
 
     cursor.close()
@@ -530,6 +539,7 @@ def send_message(message,receiverPC):
         message_id = result[0]
 
     except:
+        logger.logDebug(str(traceback.format_exc()))
         conn.rollback()
         cursor.close()
         return [False,"Message_id not found",[]]
@@ -563,6 +573,7 @@ def create_personalChat(sender,receiver):
         cursor.execute(QUERY)
         conn.commit()
     except:
+        logger.logDebug(str(traceback.format_exc()))
         conn.rollback()
         return False # cannot create chat
     
@@ -573,6 +584,7 @@ def create_personalChat(sender,receiver):
         cursor.execute(QUERY)
         result = cursor.fetchone()
     except:
+        logger.logDebug(str(traceback.format_exc()))
         return False # error
     
     cursor.close()
@@ -607,6 +619,7 @@ def create_group(group):
         conn.commit()
         result = cursor.fetchone()
     except:
+        logger.logDebug(str(traceback.format_exc()))
         conn.rollback()
         return False # cannot create chat
     

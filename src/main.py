@@ -52,6 +52,9 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
   #await websocket.send_text("Connessione al socket effettuata")
 
+    # da pensare se modificare il db togliendo l'associazione di uno specifico messaggio al chat id (permettendo quindi che l'id 5000 possa essere associato a 2000-2001-2002 come primo messaggio)
+    # modifica il json includendo il chat id nella risposta
+    # cambia tutti i campi a text aggiungendo anche le relazioni
   try:
     while True:
         data = await websocket.receive_text()
@@ -127,7 +130,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 logWSMessage(user_id,"Risposta inviata: "+json.dumps(response)+" \n Per richiesta: "+json.dumps(data))
                 await websocket.send_text(json.dumps(response))
 
-            except Exception as e:
+            except:
                 logWSMessage(user_id,"Messaggio invalido: "+json.dumps(data)+" || con errore: "+str(traceback.format_exc()))
                 pass
 
