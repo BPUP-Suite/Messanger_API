@@ -408,6 +408,11 @@ def user_login_check(loginUser):
 
 def chat_type_fromChatID(chat_id):
 
+    # db info:
+    # chat: 2000000000000000000 
+    # group: 3000000000000000000
+    # channel: 4000000000000000000
+    
     if chat_id[:1] == "2":
         return "chat"
     if chat_id[:1] == "3":
@@ -423,9 +428,9 @@ def has_user_access_to_chatID(sender,receiver,chat_id,type):
 
         cursor = conn.cursor()
 
-        # check if exist
+        # check if exist (3 cases: from chat_id + sender, from sender + receiver, from receiver + sender)
 
-        QUERY = f"SELECT chat_id FROM public.chats WHERE chat_id = {chat_id} AND (user1 = '{sender}' OR user2 = '{sender}')"
+        QUERY = f"SELECT chat_id FROM public.chats WHERE (chat_id = '{chat_id}' AND (user1 = '{sender}' OR user2 = '{sender}')) OR (user1 = '{sender}' AND user2 = '{receiver}') OR (user1 = '{receiver}' AND user2 = '{sender}')"
 
         logger.fromDatabase(QUERY)
 
@@ -441,7 +446,7 @@ def has_user_access_to_chatID(sender,receiver,chat_id,type):
                 return create_personalChat(sender,receiver)
             return False
 
-        return chat_id
+        return result[0]
 
 
     if(type == "group"):
