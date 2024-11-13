@@ -131,7 +131,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 await websocket.send_text(json.dumps(response))
 
             except:
-                logWSMessage(user_id,"Messaggio invalido: "+json.dumps(data)+" || con errore: "+str(traceback.format_exc()))
+                logDebug(str(traceback.format_exc()))
+                logWSMessage(user_id,"Messaggio invalido: "+json.dumps(data))
                 pass
 
   except WebSocketDisconnect:
