@@ -82,7 +82,7 @@ def clientDB_init(api_key):
 
     cursor = conn.cursor()
 
-    QUERY = f"SELECT chat_id,user1,user2 FROM public.chats WHERE user1='{user_id}' OR user2='{user_id}'"
+    QUERY = f"SELECT chat_id,user1,user2 FROM public.chats WHERE user1={user_id} OR user2={user_id}"
     
     try:
         logger.fromDatabase(QUERY)
@@ -102,7 +102,7 @@ def clientDB_init(api_key):
 
             messages = []
 
-            QUERY = f"SELECT message_id,text,sender,date FROM public.messages WHERE chat_id='{chat_id}'"
+            QUERY = f"SELECT message_id,text,sender,date FROM public.messages WHERE chat_id={chat_id}"
 
             try:
                 logger.fromDatabase(QUERY)
@@ -439,7 +439,7 @@ def has_user_access_to_chatID(sender,receiver,chat_id,type):
 
         # check if exist (3 cases: from chat_id + sender, from sender + receiver, from receiver + sender)
 
-        QUERY = f"SELECT chat_id FROM public.chats WHERE (chat_id = '{chat_id}' AND (user1 = '{sender}' OR user2 = '{sender}')) OR (user1 = '{sender}' AND user2 = '{receiver}') OR (user1 = '{receiver}' AND user2 = '{sender}')"
+        QUERY = f"SELECT chat_id FROM public.chats WHERE (chat_id = {chat_id} AND (user1 = {sender} OR user2 = {sender})) OR (user1 = {sender} AND user2 = {receiver}) OR (user1 = {receiver} AND user2 = {sender})"
 
         logger.fromDatabase(QUERY)
 
@@ -472,7 +472,7 @@ def get_receiver_personalChat(chat_id,sender):
 
     cursor = conn.cursor()
 
-    QUERY = f"SELECT user1,user2 FROM public.chats WHERE chat_id = '{chat_id}' AND user1 = '{sender}' OR user2 = '{sender}'"
+    QUERY = f"SELECT user1,user2 FROM public.chats WHERE chat_id = {chat_id} AND user1 = {sender} OR user2 = {sender}"
 
     logger.fromDatabase(QUERY)
 
@@ -527,7 +527,7 @@ def send_message(message,receiverPC):
 
     cursor = conn.cursor()
 
-    QUERY = f"INSERT INTO public.messages (chat_id,text,sender,date) VALUES ({chat_id},'{text}','{sender}','{date}'); SELECT currval(pg_get_serial_sequence('public.messages','message_id'));" 
+    QUERY = f"INSERT INTO public.messages (chat_id,text,sender,date) VALUES ({chat_id},'{text}',{sender},'{date}'); SELECT currval(pg_get_serial_sequence('public.messages','message_id'));" 
 
     logger.fromDatabase(QUERY)
     message_id = False
@@ -565,7 +565,7 @@ def create_personalChat(sender,receiver):
 
     ## ADD CHAT TO DB
 
-    QUERY = f"INSERT INTO public.chats (user1,user2) VALUES ('{sender}','{receiver}')" 
+    QUERY = f"INSERT INTO public.chats (user1,user2) VALUES ({sender},{receiver})" 
     
     logger.fromDatabase(QUERY)
 
@@ -577,7 +577,7 @@ def create_personalChat(sender,receiver):
         conn.rollback()
         return False # cannot create chat
     
-    QUERY = f"SELECT chat_id FROM public.chats WHERE user1 = '{sender}' AND user2 ='{receiver}'"
+    QUERY = f"SELECT chat_id FROM public.chats WHERE user1 = {sender} AND user2 ={receiver}"
     logger.fromDatabase(QUERY)
 
     try:

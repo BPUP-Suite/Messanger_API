@@ -51,8 +51,8 @@ ALTER TABLE public.channels OWNER TO bpup;
 
 CREATE TABLE public.chats (
     chat_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 2000000000000000000 MINVALUE 2000000000000000000 MAXVALUE 2999999999999999999 CACHE 1 ),
-    user1 text NOT NULL,
-    user2 text NOT NULL,
+    user1 bigint NOT NULL,
+    user2 bigint NOT NULL,
     pinned_messages text[]
 );
 
@@ -108,9 +108,9 @@ ALTER TABLE public.handles OWNER TO bpup;
 
 CREATE TABLE public.messages (
     message_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 5000000000000000000 MINVALUE 5000000000000000000 MAXVALUE 5999999999999999999 CACHE 1 ),
-    chat_id text NOT NULL,
+    chat_id bigint NOT NULL,
     text text NOT NULL,
-    sender text NOT NULL,
+    sender bigint NOT NULL,
     date timestamp without time zone NOT NULL,
     -- modified boolean DEFAULT FALSE,
     -- conferme di lettura array persone
@@ -128,7 +128,7 @@ ALTER TABLE public.messages OWNER TO bpup;
 
 CREATE TABLE public.notification (
     user_id bigint NOT NULL,
-    chat_id text NOT NULL,
+    chat_id bigint NOT NULL,
     disable boolean DEFAULT false NOT NULL
 );
 
@@ -180,7 +180,7 @@ ALTER TABLE ONLY public.files
 --
 
 ALTER TABLE ONLY public.messages
-    ADD CONSTRAINT messages_pkey PRIMARY KEY (message_id);
+    ADD CONSTRAINT messages_pkey PRIMARY KEY (message_id,chat_id);
 
 
 --
