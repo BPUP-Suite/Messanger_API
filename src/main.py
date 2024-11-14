@@ -78,7 +78,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 # SEND MESSAGE TO EVERY SENDER AND RECEIVER DEVICES
                 if(type == "send_message"):
 
-                    response = {"type":"send_message,""send_message":False}
+                    response = {"type":"send_message","send_message":False}
                     
                     chat_id = json.getValue(data,"chat_id")
                     text = json.getValue(data,"text")
