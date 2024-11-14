@@ -91,12 +91,12 @@ def clientDB_init(api_key):
         resultChat = cursor.fetchall()
 
         for rowChat in resultChat:
-            chat_id = rowChat[0]
+            chat_id = str(rowChat[0])
 
-            if rowChat[1] == user_id:
-                user = user_group_channel_fromID_toHandle(rowChat[2])
+            if str(rowChat[1]) == user_id:
+                user = user_group_channel_fromID_toHandle(str(rowChat[2]))
             else:
-                user = user_group_channel_fromID_toHandle(rowChat[1])
+                user = user_group_channel_fromID_toHandle(str(rowChat[1]))
             
             # get messages info
 
@@ -112,7 +112,7 @@ def clientDB_init(api_key):
 
                 for rowMessage in resultMessage:
 
-                    message = object.MessageJson(rowMessage[0],rowMessage[1],rowMessage[2],rowMessage[3])
+                    message = object.MessageJson(str(rowMessage[0]),chat_id,rowMessage[1],rowMessage[2],rowMessage[3])
                     messages.append(message)
             
             except:
@@ -222,11 +222,11 @@ def user_group_channel_fromHandle_toID(handle):
 
     try:
         if result[0] != None: # user_id
-            return result[0]
+            return str(result[0])
         elif result[1] != None: # group_id
-            return result[1]   
+            return str(result[1]) 
         elif result[2] != None: # channel_id
-            return result[2]
+            return str(result[2])
     except:
         logger.logDebug(str(traceback.format_exc()))
         return None
@@ -536,7 +536,7 @@ def send_message(message,receiverPC):
         cursor.execute(QUERY)
         conn.commit()
         result = cursor.fetchone()
-        message_id = result[0]
+        message_id = str(result[0])
 
         # create response for messages sender (with message_id and date saved in local db on client)
         response_sender = {"type":"send_message","send_message":True,"date":str(date),"message_id":message_id}

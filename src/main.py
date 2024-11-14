@@ -88,7 +88,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                     response_sender,response_receiver,receivers = database.send_message(message,receiverHandle)
 
-                    if(message_id != False):
+                    if(response_sender != False):
 
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
 

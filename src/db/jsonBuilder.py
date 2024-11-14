@@ -73,7 +73,7 @@ def group_channel(chat_id,name,members,messages):
 
         for messageObj in messages:
             
-            dict_message = message(messageObj.message_id,messageObj.text,messageObj.sender,messageObj.date)
+            dict_message = message(messageObj.message_id,chat_id,messageObj.text,messageObj.sender,messageObj.date)
 
             list.append(dict_message)
 

@@ -24,8 +24,9 @@ class Message:
       self.date = date
 
 class MessageJson:
-  def __init__(self,message_id,text,sender,date):
+  def __init__(self,message_id,chat_id,text,sender,date):
     self.message_id = message_id
+    self.chat_id = chat_id
     self.text = text
     self.sender = sender
     self.date = date
