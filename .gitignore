@@ -1,3 +1,5 @@
+.vscode
+
 /src/__pycache__/
 /src/db/__pycache__/
 /src/logger/__pycache__/

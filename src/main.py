@@ -50,11 +50,6 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   await websocket.accept()
   logWSConnection(user_id,len(active_connections[user_id]),"Opened")
 
-  #await websocket.send_text("Connessione al socket effettuata")
-
-    # da pensare se modificare il db togliendo l'associazione di uno specifico messaggio al chat id (permettendo quindi che l'id 5000 possa essere associato a 2000-2001-2002 come primo messaggio)
-    # modifica il json includendo il chat id nella risposta
-    # cambia tutti i campi a text aggiungendo anche le relazioni
   try:
     while True:
         data = await websocket.receive_text()
@@ -71,7 +66,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 # INITIALIZE CLIENT DATABASE
                 if(type == "init"):
 
-                    apiKey = json.getValue(data,"apiKey")
+                    apiKey = api_key
 
                     response = database.clientDB_init(apiKey)
                 
