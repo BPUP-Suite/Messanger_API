@@ -20,10 +20,10 @@ da capire come evitare che il file json sia pieno di backslash (giuro non capisc
 ###########################################
 # websocket
 
-# init
-# send_message
-# ack
-# update
+## init
+## send_message
+## ack
+## update
 
 ...
 
