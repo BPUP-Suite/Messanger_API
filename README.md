@@ -1,6 +1,13 @@
 # Messanger_API
 
     DOCUMENTAZIONE NON AGGIORNATA (aggiornata oggi il 21/10/24 ma ancora non completa)
+    DEVO DECISAMENTE SISTEMARLO IL 25 LO FACCIO
+
+# INDICE
+
+websocket docs : (websocket)
+To-dos : (TO DO)
+
     
 ## TO DO ##
 
@@ -10,6 +17,17 @@ sistema la documentazione sottostante con le cosine nuove
 sposta il metodo send messages dentro websocket
 da capire come evitare che il file json sia pieno di backslash (giuro non capisco che qualcuno mi aiuti)
 
+###########################################
+# websocket
+
+# init
+# send_message
+# ack
+# update
+
+...
+
+###########################################
 ####
 
 API per l`app di messaggistica
