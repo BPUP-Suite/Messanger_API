@@ -7,6 +7,7 @@
 # INDICE
 
 - [To-dos](#TODO)
+- [Installation](#INSTALLATION)
 - [Docs](#DOCS)
     - [Docker](#DOCKER)
     - [Database](#DATABASE)
@@ -42,6 +43,10 @@ Se vuoi usarla ti basta clonare la repo, cambiare il nome a example.env in .env,
 
 *Configurazione di Nginx Proxy Manager* ??? ve la dò un giorno (anche perchè uso la versione web decisamente più facile da gestire, finirò probabilmente per mettere una semplice guida alla configurazione piuttosto che i file veri e propri)
 
+
+# INSTALLATION
+
+.................
 
 # DOCS
 
