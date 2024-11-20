@@ -236,7 +236,7 @@ I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
 ```
 {
   "type": "send_message",
-  "init": "False"
+  "send_message": "False"
 }
 ```
 
@@ -253,9 +253,16 @@ Richista fallita per uno dei seguenti motivi:
 ```
 {
   "type": "send_message",
-   TBD (NON COMPLETA)
+  "send_message": "True",
+  "date": {date_time},
+  "message_id": {message_id}
 }
 ```
+
+I campi contrassegnati da {valore} saranno sostituiti secondo l'esempio:
+
++ {date_time} = ora locale (ottenuta server-side) della forma AAAA-MM-GG HH-MM-SS.MSMSMS (esempio: 2024-11-20 14:06:08.116420)
++ {message_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, all'invio di un nuovo messaggio
 
 ### ack
 
