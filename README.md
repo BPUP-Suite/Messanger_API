@@ -12,7 +12,7 @@
     - [Docker](#DOCKER)
     - [Database](#DATABASE)
     - [API](#API)
-    - [Websocket](#WEBSOCKET)
+    - [WebSocket](#WebSocket)
       - [init](#init)
       - [send_message](#send_message)
       - [ack](#ack)
@@ -152,11 +152,117 @@ Utilizzo principale della libreria di FastAPI (sia lodato il cielo che non mi to
 Per la documentazione relativa a questa parte basta far partire il container ed entrare all'indirizzo localhost:8000/docs (indicativo, non è detto sia localhost per voi, potrebbe cambiare IP, porta, non la folder :D ) (penserò anche a lasciare disponibile la pagina html in qualche folder, così non me tocca far partire il container ogni volta -UPDATE 21/10/24 e ancora no fatto-)
 Aggiunta anche la sezione relativa a websocket all'inizio del file
 
-## WEBSOCKET
+## WebSocket
+
+#### Connessione
+
+Usare l'indirizzo:
+
+```
+wss://{indirizzo}/ws/{user_id}/{api_key} 
+```
+(richiede ovviamente un certificato SSL, altrimenti usare il l'alternativa ws [NON SICURA] )
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {indirizzo} = bpup.messanger.it (ufficiale)
++ {user_id} = sequenza di numeri ottenuta da [get_user_id](#get_user_id)
++ {api_key} = sequenza di caratteri ottenuta da [login](#login)
 
 ### init
+
+Per inizializzare il database locale del client, ritorna una file json con tutte le informazioni relative all'utente (basiche[come handle,nome,cognome,...], chats(tutte le chat personali, gruppi e canali con i relativi chat_id, membri, ...), messages (per ogni chat analizzata))
+
+#### Richiesta
+
+```
+{
+  "type": "init",
+  "api_key":{api_key}
+}
+```
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "type": "init",
+  "init": "False"
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ api_key errata
++ Internal Server Error
+
+##### - 2. 
+
+```
+{
+  "type": "init",
+  "init": "True",
+  "localUser": "True", ... TBD (NON COMPLETA)
+}
+```
+
 ### send_message
+
+Per mandare un messaggio ad una qualsiasi chat (può anche creare una chat privata con un altro utente nel caso non esista se specificato il receiver [handle] )
+
+#### Richiesta
+
+```
+{
+  "type": "send_message",
+  "text":{text},
+  "chat_id":{chat_id},
+  "receiver":{receiver}
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {text} = semplicissimo testo (max 2056 caratteri)
++ {chat_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, alla creazione di una nuova chat
++ {receiver} = handle dell'utente destinatario (OPTIONAL)
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "type": "send_message",
+  "init": "False"
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ testo troppo lungo
++ chat_id non esiste (e receiver non è stato inserito o non esiste)
++ non si ha accesso alla chat richiesta
++ ????
++ Internal Server Error
+
+##### - 2. 
+
+```
+{
+  "type": "send_message",
+   TBD (NON COMPLETA)
+}
+```
+
 ### ack
+
+TDB
+
 ### update
+
+TDB
 
 
