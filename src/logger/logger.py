@@ -9,6 +9,7 @@ def toConsole(text): # print on console
     text = date + " - "+text
     print(text)
     toFile(text)
+    addToQueue_Stream(text)
 
 def toFile(text): # write to a log file
     fileLogger.write(text)
@@ -30,3 +31,19 @@ def fromDatabase(text):
 
 def logDebug(text):
     toConsole("######## DEBUG INFO: "+text)
+
+import queue
+log_queue = queue.Queue()
+
+# Funzione per aggiungere un messaggio alla coda
+def addToQueue_Stream(text):
+    log_queue.put(text)
+
+def toStream():
+    while True:
+
+        # Prendi il prossimo messaggio dalla coda
+        message = log_queue.get()
+        # Invia il messaggio come evento SSE
+        yield f"data: {message}\n\n"
+        log_queue.task_done()  # Segna il messaggio come processato

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Log Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #logContainer {
+            white-space: pre-wrap; /* Mantieni nuove righe e spazi */
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Log Viewer</h1>
+    <div id="logContainer">{{ logs|safe }}</div> <!-- Carica i log iniziali qui -->
+
+    <script>
+        // Inizializza l'EventSource per ricevere i log in tempo reale
+        const logContainer = document.getElementById('logContainer');
+        const eventSource = new EventSource('/admin/stream');
+
+        // Ascolta i messaggi dal server
+        eventSource.onmessage = function(event) {
+            const newLog = document.createElement('div');
+            newLog.textContent = event.data;
+            logContainer.appendChild(newLog);
+            logContainer.scrollTop = logContainer.scrollHeight; // Auto-scroll al log più recente
+        };
+    </script>
+</body>
+</html>

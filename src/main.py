@@ -1,7 +1,10 @@
 # START COMMAND: uvicorn main:app --reload
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.websockets import WebSocket,WebSocketDisconnect
+from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from security.auth import check_api_key # remove (api used only in socket)
 from typing import Dict, List
@@ -10,7 +13,7 @@ import traceback
 import db.database as database
 import db.object as object
 from security.encrypter import generate_hash
-from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage, logDebug
+from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage, logDebug, toStream
 import db.jsonBuilder as json
 
 app = FastAPI()
@@ -218,11 +221,38 @@ async def main(api_key:str):
 
 # ADMIN REQUEST # 
 
+# Set up Jinja2 templates directory
+templates = Jinja2Templates(directory="templates")
+
+# ADMIN LOG PANEL
+
+# Route to serve the webpage
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_page(request: Request):
+    logs = load_logs_from_file()  # Load logs from the file
+    return templates.TemplateResponse("index.html", {"request": request, "logs": logs})
+
+# Stream logs to the admin page
+@app.get("/admin/stream")
+async def stream():
+    return StreamingResponse(toStream(), media_type='text/event-stream')
+
+
+def load_logs_from_file(log_file: str = "logs/log.txt"):
+    try:
+        with open(log_file, "r") as file:
+            logs = file.readlines()  # Legge tutte le righe nel file
+        # Unisce tutte le righe in una singola stringa con un carattere di nuova linea
+        return "".join(logs)
+    except FileNotFoundError:
+        return "Log file not found."
+    except Exception as e:
+        return f"Error loading logs: {str(e)}"
 
 
 ## STARTING APPLICATION
 
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000) # ADD POSSIBILITY TO CHANGE IP + PORT FROM ENV FILE
+    
+    uvicorn.run(app, host="0.0.0.0", port=80) # ADD POSSIBILITY TO CHANGE IP + PORT FROM ENV FILE

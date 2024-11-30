@@ -455,7 +455,7 @@ def has_user_access_to_chatID(sender,receiver,chat_id,type):
                 return create_personalChat(sender,receiver)
             return False
 
-        return result[0]
+        return str(result[0])
 
 
     if(type == "group"):
