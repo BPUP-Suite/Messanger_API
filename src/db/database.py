@@ -539,7 +539,7 @@ def send_message(message,receiverPC):
         message_id = str(result[0])
 
         # create response for messages sender (with message_id and date saved in local db on client)
-        response_sender = {"type":"send_message","send_message":True,"date":str(date),"message_id":message_id}
+        response_sender = {"type":"send_message","send_message": True,"date":str(date),"message_id":message_id}
 
     except:
         logger.logDebug(str(traceback.format_exc()))

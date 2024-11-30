@@ -98,29 +98,28 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                         response = response_sender
 
-                # ACK (?) (NOT-TESTED) #confirm read of messages
-                if(type == "ack"):
-                    response = json.dumps('{"ack":"true"}')
+                    # ACK (?) (DA MODIFICARE) (NOT-TESTED) #confirm read of messages
+                    if(type == "ack"):
+                        response = {"type":"ack","ack":True}
 
-                    message_id = json.getValue(data,"message_id")
-                     
-                     # datetime needed ??
-                    
-                    json_message,receivers = database.ack(user_id,message_id)
+                        message_id = json.getValue(data,"message_id")
+                        
+                        # datetime needed ??
+                        
+                        json_message,receivers = database.ack(user_id,message_id)
 
-                    if(json_message != False):
+                        if(json_message != False):
 
-                        ### MOVE IN A METHOD
-                        # SEND ACK TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
+                            ### MOVE IN A METHOD
+                            # SEND ACK TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
 
-                        for receiver in receivers:
-                            try:
-                                for connection in active_connections[receiver]:
-                                    if connection != websocket:
-                                        await connection.send_text(json_message)
-                            except:
-                                logDebug("No users active for "+receiver) 
-
+                            for receiver in receivers:
+                                try:
+                                    for connection in active_connections[receiver]:
+                                        if connection != websocket:
+                                            await connection.send_text(json_message)
+                                except:
+                                    logDebug("No users active for "+receiver) 
 
                 logWSMessage(user_id,"Risposta inviata: "+json.dumps(response)+" \n Per richiesta: "+json.dumps(data))
                 await websocket.send_text(json.dumps(response))
@@ -133,15 +132,6 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   except WebSocketDisconnect:
       active_connections[user_id].remove(websocket)
       pass
-
-
-###
-#DISCONNETTI DA TUTTE LE WEBSOCKET ALLO SHUTDOWN
-#@app.on_event("shutdown")
-#async def shutdown():
- #   for websocket in active_connections_set:
-  #      await websocket.close(code=1001)
-###
 
 
 @app.get("/user/action/access")
