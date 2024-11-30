@@ -1,8 +1,27 @@
 # Messanger_API
 
     DOCUMENTAZIONE NON AGGIORNATA (aggiornata oggi il 21/10/24 ma ancora non completa)
-    
-## TO DO ##
+    DEVO DECISAMENTE SISTEMARLO IL 25 LO FACCIO
+    da togliere tutta la documentazione del codice, solo docker, nginx,(nella parte di installation)  api e WEBSOCKET, massimo il database
+
+# INDICE
+
+- [To-dos](#TODO)
+- [Installation](#INSTALLATION)
+- [Docs](#DOCS)
+    - [Docker](#DOCKER)
+    - [Database](#DATABASE)
+    - [API](#API)
+    - [WebSocket](#WebSocket)
+      - [init](#init)
+      - [send_message](#send_message)
+      - [ack](#ack)
+      - [update](#update)
+
+
+
+     
+## TODO
 
 aggiungi conn.rollback() a tutti gli statement di insert into che potrebbe dare problemi
 sistema la documentazione sottostante con le cosine nuove
@@ -10,6 +29,12 @@ sistema la documentazione sottostante con le cosine nuove
 sposta il metodo send messages dentro websocket
 da capire come evitare che il file json sia pieno di backslash (giuro non capisco che qualcuno mi aiuti)
 
+###########################################
+
+
+...
+
+###########################################
 ####
 
 API per l`app di messaggistica
@@ -19,8 +44,11 @@ Se vuoi usarla ti basta clonare la repo, cambiare il nome a example.env in .env,
 *Configurazione di Nginx Proxy Manager* ??? ve la dò un giorno (anche perchè uso la versione web decisamente più facile da gestire, finirò probabilmente per mettere una semplice guida alla configurazione piuttosto che i file veri e propri)
 
 
-# DOCS
+# INSTALLATION
 
+.................
+
+# DOCS
 
 ## DOCKER
 
@@ -33,7 +61,7 @@ Se vuoi usarla ti basta clonare la repo, cambiare il nome a example.env in .env,
 I dati di tutti i container sono dentro /data/
 
 
-## DB 
+## DATABASE
 
 
 Entitá:
@@ -123,3 +151,125 @@ Utilizzo principale della libreria di FastAPI (sia lodato il cielo che non mi to
 
 Per la documentazione relativa a questa parte basta far partire il container ed entrare all'indirizzo localhost:8000/docs (indicativo, non è detto sia localhost per voi, potrebbe cambiare IP, porta, non la folder :D ) (penserò anche a lasciare disponibile la pagina html in qualche folder, così non me tocca far partire il container ogni volta -UPDATE 21/10/24 e ancora no fatto-)
 Aggiunta anche la sezione relativa a websocket all'inizio del file
+
+## WebSocket
+
+#### Connessione
+
+Usare l'indirizzo:
+
+```
+wss://{indirizzo}/ws/{user_id}/{api_key} 
+```
+(richiede ovviamente un certificato SSL, altrimenti usare il l'alternativa ws [NON SICURA] )
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {indirizzo} = bpup.messanger.it (ufficiale)
++ {user_id} = sequenza di numeri ottenuta da [get_user_id](#get_user_id)
++ {api_key} = sequenza di caratteri ottenuta da [login](#login)
+
+### init
+
+Per inizializzare il database locale del client, ritorna una file json con tutte le informazioni relative all'utente (basiche[come handle,nome,cognome,...], chats(tutte le chat personali, gruppi e canali con i relativi chat_id, membri, ...), messages (per ogni chat analizzata))
+
+#### Richiesta
+
+```
+{
+  "type": "init",
+  "api_key":{api_key}
+}
+```
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "type": "init",
+  "init": "False"
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ api_key errata
++ Internal Server Error
+
+##### - 2. 
+
+```
+{
+  "type": "init",
+  "init": "True",
+  "localUser": "True", ... TBD (NON COMPLETA)
+}
+```
+
+### send_message
+
+Per mandare un messaggio ad una qualsiasi chat (può anche creare una chat privata con un altro utente nel caso non esista se specificato il receiver [handle] )
+
+#### Richiesta
+
+```
+{
+  "type": "send_message",
+  "text":{text},
+  "chat_id":{chat_id},
+  "receiver":{receiver}
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {text} = semplicissimo testo (max 2056 caratteri)
++ {chat_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, alla creazione di una nuova chat
++ {receiver} = handle dell'utente destinatario (OPTIONAL)
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "type": "send_message",
+  "send_message": "False"
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ testo troppo lungo
++ chat_id non esiste (e receiver non è stato inserito o non esiste)
++ non si ha accesso alla chat richiesta
++ ????
++ Internal Server Error
+
+##### - 2. 
+
+```
+{
+  "type": "send_message",
+  "send_message": "True",
+  "date": {date_time},
+  "message_id": {message_id}
+}
+```
+
+I campi contrassegnati da {valore} saranno sostituiti secondo l'esempio:
+
++ {date_time} = ora locale (ottenuta server-side) della forma AAAA-MM-GG HH-MM-SS.MSMSMS (esempio: 2024-11-20 14:06:08.116420)
++ {message_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, all'invio di un nuovo messaggio
+
+### ack
+
+TDB
+
+### update
+
+TDB
+
+
