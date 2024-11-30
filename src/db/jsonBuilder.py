@@ -103,3 +103,9 @@ def init_json(handle,email,name,surname,chats,groups,channels):
         dict["chats"] = list
 
     return dict
+
+def message_to_receiver(message_id,chat_id,text,sender,date):
+    dict = {"type":"receive_message"}
+    dict.update(message(message_id,chat_id,text,sender,date))
+
+    return dict

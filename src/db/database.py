@@ -552,7 +552,7 @@ def send_message(message,receiverPC):
     ## SECOND PHASE: CREATE JSON MESSAGE FOR RESPONSE
 
     sender = user_group_channel_fromID_toHandle(sender) # convert sender user_id to his handle
-    response_receiver = jsonBuilder.message(message_id,chat_id,text,sender,date)
+    response_receiver = jsonBuilder.message_to_receiver(message_id,chat_id,text,sender,date)
 
     ## THIRD PHASE: RETURN ALL TO MAIN AND SENDS MESSAGES TO ALL 
     
