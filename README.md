@@ -18,6 +18,7 @@
     - [WebSocket](#WebSocket)
       - [init](#init)
       - [send_message](#send_message)
+      - [receive_message](#receive_message)
       - [ack](#ack)
       - [update](#update)
 
@@ -255,6 +256,33 @@ I campi contrassegnati da {valore} saranno sostituiti secondo l'esempio:
 + {date_time} = ora locale (ottenuta server-side) della forma AAAA-MM-GG HH-MM-SS.MSMSMS (esempio: 2024-11-20 14:06:08.116420)
 + {message_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, all'invio di un nuovo messaggio
 + {hash} = valore calcolato a partire dal testo del messaggio per identificare univocamente il messaggio quando viene mandata la conferma di invio del messaggio con relativi dati extra forniti dal server al client (in pratica è un message_id temporaneo usato dal client generato sia lato client che lato server)
+
+### receive_message
+
+Riceve messaggi mandati sia da altri utenti che da un'altra websocket attiva dello stesso utente
+
+#### Richiesta
+
+No
+
+#### Risposta
+
+##### - 1. 
+
+```
+{
+  "type": "receive_message",
+  "message_id": {message_id}
+  "chat_id":{chat_id},
+  "text":{text},
+  "sender":{sender},
+  "date": {date_time}
+}
+```
+
+I campi contrassegnati da {valore} saranno sostituiti secondo l'esempio:
+
+da fare perchè sincero no voglia (al massimo conviene fare tipo un dictionary alla fine con la spiegazione generale e rimandare a quello ogni volta che viene nominato uno di questi termini, cosa molto frequente)
 
 ### ack
 
