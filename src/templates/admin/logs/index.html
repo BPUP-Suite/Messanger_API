@@ -26,6 +26,13 @@
     <div id="logContainer">{{ logs|safe }}</div> <!-- Carica i log iniziali qui -->
 
     <script>
+
+        // Esegui lo scroll subito dopo il caricamento della pagina
+        window.onload = function() {
+            const logContainer = document.getElementById('logContainer');
+            logContainer.scrollTop = logContainer.scrollHeight;
+        };
+
         // Inizializza l'EventSource per ricevere i log in tempo reale
         const logContainer = document.getElementById('logContainer');
         const eventSource = new EventSource('/admin/stream');
