@@ -79,8 +79,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     salt = json.getValue(data,"salt")
 
                     # da gestire bene l'errore nella generazione della risposta
-                    #if len(text) > 2056:
-                     #   raise Exception("Message too long")
+                    if len(text) > 2056:
+                       raise Exception("Message too long")
 
                     message = object.Message(chat_id,text,user_id,None)
 
