@@ -246,7 +246,7 @@ Richista fallita per uno dei seguenti motivi:
   "type": "send_message",
   "send_message": "True",
   "date": {date_time},
-  "message_id": {message_id}
+  "message_id": {message_id},
   "hash": {hash}
 }
 ```

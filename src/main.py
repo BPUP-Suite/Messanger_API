@@ -99,6 +99,9 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                 logDebug("No users active for "+receiver+" or error: "+str(traceback.format_exc())) 
 
                         response = response_sender
+                    
+                    if(type == "create_chat"):
+                        response = {"type":"create_chat","create_chat":"False"}
 
                     # ACK (?) (DA MODIFICARE) (NOT-TESTED) #confirm read of messages
                     if(type == "ack"):
