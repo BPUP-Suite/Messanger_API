@@ -64,14 +64,10 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
             try:
                 type = json.getValue(data,"type")
 
-                # togli api key check e usa lo user id della socket
-
                 # INITIALIZE CLIENT DATABASE
                 if(type == "init"):
 
-                    apiKey = api_key
-
-                    response = database.clientDB_init(apiKey)
+                    response = database.clientDB_init(user_id)
                 
                 # SEND MESSAGE TO EVERY SENDER AND RECEIVER DEVICES
                 if(type == "send_message"):

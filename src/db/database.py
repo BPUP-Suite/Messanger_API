@@ -45,17 +45,10 @@ def init(): # init del database
 
     cursor.close()
 
-def clientDB_init(api_key):
+def clientDB_init(user_id):
 
     response = {'type':'init','init':'False'}
-    handle = get_userHandle_from_apiKey(api_key)
-
-    if handle == None:
-        return response
     
-    # get local user information
-
-    user_id = user_group_channel_fromHandle_toID(handle)
     cursor = conn.cursor()
 
     QUERY = f"SELECT email,name,surname FROM public.users WHERE user_id='{user_id}'"
