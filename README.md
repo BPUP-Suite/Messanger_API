@@ -4,6 +4,11 @@
     DEVO DECISAMENTE SISTEMARLO IL 25 LO FACCIO
     da togliere tutta la documentazione del codice, solo docker, nginx,(nella parte di installation)  api e WEBSOCKET, massimo il database
 
+    Aggiornamento:
+    PGADMIN E NGINX RIMARRANNO SOLO PER LA FASE DI TESTING
+    successivamente si utilizzerà una soluzione client e una vpn per accedere al db
+                                  e nginx su una soluzione più estesa vista la presenza di più servizi
+
 # INDICE
 
 - [To-dos](#TODO)

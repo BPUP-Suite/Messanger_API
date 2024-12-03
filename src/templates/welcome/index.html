@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App di Messaggistica</title>
+    <style>
+        /* Stile generale */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            background-color: #f9f9f9;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6c63ff, #8e44ad);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .features, .download {
+            margin-top: 40px;
+        }
+
+        .features h2, .download h2 {
+            text-align: center;
+            color: #6c63ff;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .feature p {
+            color: #666;
+        }
+
+        .download {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .download a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #6c63ff;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .download a:hover {
+            background: #8e44ad;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #333;
+            color: white;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Benvenuti nella Nuova Era della Messaggistica</h1>
+        <p>Connettiti con chi vuoi, quando vuoi, con semplicità e velocità.</p>
+    </header>
+
+    <div class="container">
+        <section class="features">
+            <h2>Caratteristiche Principali</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <h3>Messaggi in Tempo Reale</h3>
+                    <p>Chatta con i tuoi amici e colleghi senza ritardi, ovunque tu sia.</p>
+                </div>
+                <div class="feature">
+                    <h3>Sicurezza Avanzata</h3>
+                    <p>I tuoi dati e conversazioni sono protetti da crittografia end-to-end.</p>
+                </div>
+                <div class="feature">
+                    <h3>Chiamate Video</h3>
+                    <p>Effettua chiamate video di alta qualità con un solo clic.</p>
+                </div>
+                <div class="feature">
+                    <h3>Condivisione File</h3>
+                    <p>Condividi facilmente immagini, documenti e video con i tuoi contatti.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="download">
+            <h2>Scarica l'App Oggi</h2>
+            <p>Disponibile per iOS, Android e Web. Inizia subito a connetterti!</p>
+            <a href="#">Scarica Ora</a>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 App di Messaggistica. Tutti i diritti riservati.</p>
+    </footer>
+</body>
+</html>

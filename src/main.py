@@ -230,7 +230,7 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_page(request: Request):
     logs = load_logs_from_file()  # Load logs from the file
-    return templates.TemplateResponse("index.html", {"request": request, "logs": logs})
+    return templates.TemplateResponse("admin/logs/index.html", {"request": request, "logs": logs})
 
 # Stream logs to the admin page
 @app.get("/admin/stream")
@@ -249,6 +249,10 @@ def load_logs_from_file(log_file: str = "logs/log.txt"):
     except Exception as e:
         return f"Error loading logs: {str(e)}"
 
+# Route to serve the webpage
+@app.get("/welcome", response_class=HTMLResponse)
+async def welcome_page(request: Request):
+    return templates.TemplateResponse("welcome/index.html", {"request": request})
 
 ## STARTING APPLICATION
 
