@@ -12,7 +12,7 @@ import traceback
 
 import db.database as database
 import db.object as object
-from security.encrypter import generate_hash
+from security.encrypter import generate_hash,generate_password_hash
 from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage, logDebug, toStream
 import db.jsonBuilder as json
 
@@ -76,6 +76,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     
                     chat_id = json.getValue(data,"chat_id")
                     text = json.getValue(data,"text")
+                    salt = json.getValue(data,"salt")
 
                     # da gestire bene l'errore nella generazione della risposta
                     if len(text) > 2056:
@@ -98,7 +99,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             except Exception as e:
                                 logDebug("No users active for "+receiver+" or error: "+str(traceback.format_exc())) 
 
-                        response = response_sender
+                        response = response_sender.update({'hash': generate_hash(text,salt)})
                     
                     if(type == "create_chat"):
                         response = {"type":"create_chat","create_chat":"False"}
@@ -167,7 +168,7 @@ async def main(email:str,name:str,surname:str,handle:str,password:str,confirm_pa
 
 
     if(password==confirm_password):
-        password = generate_hash(password) # hashed password
+        password = generate_password_hash(password) # hashed password
         user = object.User(email,name,surname,handle,password) # create User obj used in databases method
         confirmation = database.add_user_toDB(user) # return True: Signup OK | False: Some error occurred, retry
         logAPIRequest(user.handle,type,confirmation)

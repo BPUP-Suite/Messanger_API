@@ -212,7 +212,7 @@ Per mandare un messaggio ad una qualsiasi chat (può anche creare una chat priva
   "type": "send_message",
   "text":{text},
   "chat_id":{chat_id},
-  "receiver":{receiver}
+  "salt":{salt}
 }
 ```
 
@@ -220,6 +220,7 @@ I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
 
 + {text} = semplicissimo testo (max 2056 caratteri)
 + {chat_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, alla creazione di una nuova chat
++ {salt} = utilizzato per calcolare l'hash del messaggio (utilizzando il testo) e ritornandolo al client per verificare che il messaggio riferito alle informazioni sia lo stesso
 
 #### Risposta
 

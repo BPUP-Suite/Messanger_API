@@ -498,8 +498,7 @@ def send_message(message):
 
     if(type == "chat"):
 
-        #receivers.append(get_receiver_personalChat(chat_id,sender))
-        receivers.append(str(receiverID))
+        receivers.append(get_receiver_personalChat(chat_id,sender))
 
     if(type == "group"):
 

@@ -3,26 +3,32 @@ import bcrypt # password hash
 from security.envManager import read_salt
 from security.envManager import write_salt
 
-SALT = read_salt()
+SALT = read_salt().decode('utf-8')
 if(not(SALT)):
     SALT = bcrypt.gensalt(5) # penserò alla privacy in futuro :D
     write_salt(SALT)
 
-def generate_hash(password):
-    bytes = password.encode('utf-8') 
-    hash = str(bcrypt.hashpw(bytes,SALT))
+def generate_hash(digest,salt):
 
-    # remove b' ' (che causano molti problemi nel database e mi fanno bestemmiare :D)
-    hash = hash[2:]
-    hash = hash[:-1]
+    bytes = digest.encode('utf-8') 
+    salt = salt.encode('utf-8')
+    
+    hash = bcrypt.hashpw(bytes,salt)
+
+    hash = hash.decode('utf-8')
 
     return hash
+
+def generate_password_hash(password):
+
+    return generate_hash(password,SALT)
+
 
 def check_password_hash(password,hash):
     
     confirmation = False
 
-    if generate_hash(password) == hash:
+    if generate_password_hash(password) == hash:
         confirmation = True
 
     return confirmation
