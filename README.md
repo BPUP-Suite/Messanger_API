@@ -232,7 +232,6 @@ I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
 
 + {text} = semplicissimo testo (max 2056 caratteri)
 + {chat_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, alla creazione di una nuova chat
-+ {receiver} = handle dell'utente destinatario (OPTIONAL)
 
 #### Risposta
 
@@ -248,9 +247,8 @@ I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
 Richista fallita per uno dei seguenti motivi:
 
 + testo troppo lungo
-+ chat_id non esiste (e receiver non è stato inserito o non esiste)
++ chat_id non esiste
 + non si ha accesso alla chat richiesta
-+ ????
 + Internal Server Error
 
 ##### - 2. 
@@ -261,6 +259,7 @@ Richista fallita per uno dei seguenti motivi:
   "send_message": "True",
   "date": {date_time},
   "message_id": {message_id}
+  "hash": {hash}
 }
 ```
 
@@ -268,6 +267,7 @@ I campi contrassegnati da {valore} saranno sostituiti secondo l'esempio:
 
 + {date_time} = ora locale (ottenuta server-side) della forma AAAA-MM-GG HH-MM-SS.MSMSMS (esempio: 2024-11-20 14:06:08.116420)
 + {message_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, all'invio di un nuovo messaggio
++ {hash} = valore calcolato a partire dal testo del messaggio per identificare univocamente il messaggio quando viene mandata la conferma di invio del messaggio con relativi dati extra forniti dal server al client (in pratica è un message_id temporaneo usato dal client generato sia lato client che lato server)
 
 ### ack
 

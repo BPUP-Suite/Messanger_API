@@ -80,11 +80,10 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     
                     chat_id = json.getValue(data,"chat_id")
                     text = json.getValue(data,"text")
-                    receiverHandle = json.getValue(data,"receiver")
 
                     message = object.Message(chat_id,text,user_id,None)
 
-                    response_sender,response_receiver,receivers = database.send_message(message,receiverHandle)
+                    response_sender,response_receiver,receivers = database.send_message(message)
 
                     if(response_sender != False):
 
