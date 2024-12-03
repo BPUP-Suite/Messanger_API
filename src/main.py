@@ -97,7 +97,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                         logWSMessage(receiver,str(response_receiver))
                                         await connection.send_text(json.dumps(response_receiver))
                             except Exception as e:
-                                logDebug("No users active for "+receiver+" or error: "+str(traceback.format_exc())) 
+                                logDebug("No users active for "+str(receiver)+" or error: "+str(traceback.format_exc())) 
 
                         response = response_sender.update({'hash': generate_hash(text,salt)})
                     
