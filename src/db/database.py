@@ -188,9 +188,13 @@ def user_group_channel_fromID_toHandle(id):
 
     # fetch database for handle with id
 
-    result = cursor.fetchone()
-    handle = result[0]
+    
 
+    try:
+        result = cursor.fetchone()
+        handle = result[0]
+    except:
+        logger.logDebug("ID not found"+str(traceback.format_exc()))
     cursor.close()
 
     # return only handle of the requested id
