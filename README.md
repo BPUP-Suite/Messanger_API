@@ -1,7 +1,6 @@
 # Messanger_API
 
-    DOCUMENTAZIONE NON AGGIORNATA (aggiornata oggi il 21/10/24 ma ancora non completa)
-    DEVO DECISAMENTE SISTEMARLO IL 25 LO FACCIO
+    DOCUMENTAZIONE NON AGGIORNATA (aggiornata oggi il 03/12/24 ma ancora non completa)
     da togliere tutta la documentazione del codice, solo docker, nginx,(nella parte di installation)  api e WEBSOCKET, massimo il database
 
     Aggiornamento:
@@ -12,7 +11,6 @@
 # INDICE
 
 - [To-dos](#TODO)
-- [Installation](#INSTALLATION)
 - [Docs](#DOCS)
     - [Docker](#DOCKER)
     - [Database](#DATABASE)
@@ -31,16 +29,9 @@
 aggiungi conn.rollback() a tutti gli statement di insert into che potrebbe dare problemi
 sistema la documentazione sottostante con le cosine nuove
 
-sposta il metodo send messages dentro websocket
-da capire come evitare che il file json sia pieno di backslash (giuro non capisco che qualcuno mi aiuti)
+spostare tutti messages su una lista a parte per evitare for dentro for lato client (e anche server effettivamente) OTTIMIZZAZIONEHH
 
-###########################################
-
-
-...
-
-###########################################
-####
+##
 
 API per l`app di messaggistica
 
@@ -48,10 +39,6 @@ Se vuoi usarla ti basta clonare la repo, cambiare il nome a example.env in .env,
 
 *Configurazione di Nginx Proxy Manager* ??? ve la dò un giorno (anche perchè uso la versione web decisamente più facile da gestire, finirò probabilmente per mettere una semplice guida alla configurazione piuttosto che i file veri e propri)
 
-
-# INSTALLATION
-
-.................
 
 # DOCS
 
