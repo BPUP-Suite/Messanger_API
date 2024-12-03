@@ -47,6 +47,8 @@ def init(): # init del database
 
 def clientDB_init(user_id):
 
+    handle = user_group_channel_fromID_toHandle(user_id)
+
     response = {'type':'init','init':'False'}
     
     cursor = conn.cursor()
