@@ -100,7 +100,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             except Exception as e:
                                 logDebug("No users active for "+str(receiver)+" or error: "+str(traceback.format_exc())) 
 
-                        response = response_sender.update({'hash': generate_hash(text,salt)})
+                        response_sender.update({'hash': generate_hash(text,salt)})
+                        response = response_sender
                     
                     if(type == "create_chat"):
                         response = {"type":"create_chat","create_chat":"False"}
