@@ -4,9 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.websockets import WebSocket,WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
 
-from security.auth import check_api_key # remove (api used only in socket)
 from typing import Dict, List
 import traceback
 
@@ -17,6 +15,7 @@ from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessag
 import db.jsonBuilder as json
 
 app = FastAPI()
+
 
 toConsole("----------------------------------------------------------")
 toConsole("API started!")
