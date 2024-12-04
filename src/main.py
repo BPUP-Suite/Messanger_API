@@ -73,14 +73,16 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                 if(type == "send_message"):
 
                     response = {"type":"send_message","send_message":False}
-                    
-                    chat_id = json.getValue(data,"chat_id")
+                
                     text = json.getValue(data,"text")
-                    salt = json.getValue(data,"salt")
 
-                    # da gestire bene l'errore nella generazione della risposta
+                    # da gestire bene l'errore nella generazione della risposta e da aggiungere anche in caso di testo mancante,chat_id e salt mancante, ...
+                    print(len(text))
                     if len(text) > 2056:
                        raise Exception("Message too long")
+
+                    chat_id = json.getValue(data,"chat_id")
+                    salt = json.getValue(data,"salt")
 
                     message = object.Message(chat_id,text,user_id,None)
 
