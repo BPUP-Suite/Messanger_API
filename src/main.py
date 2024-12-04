@@ -106,6 +106,18 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                     if(type == "create_chat"):
                         response = {"type":"create_chat","create_chat":"False"}
 
+                        chatType = json.getValue(data,"chatType")
+
+                        if(chatType == "personal"):
+                            handle_receiver = json.getValue(data,"handle")
+                            user_id_receiver = database.user_group_channel_fromHandle_toID(handle_receiver)
+                            sender_response = database.create_personalChat(user_id,user_id_receiver)
+                        else:
+                            sender_response = False
+
+                        if(sender_response != False):
+                            response = sender_response
+
                     # ACK (?) (DA MODIFICARE) (NOT-TESTED) #confirm read of messages
                     if(type == "ack"):
                         response = {"type":"ack","ack":True}

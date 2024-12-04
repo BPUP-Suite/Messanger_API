@@ -551,45 +551,67 @@ def send_message(message):
     
     return [response_sender,response_receiver,receivers]
 
+def get_chatID_personalChat(user1,user2):
 
-def create_personalChat(sender,receiver):
+    QUERY = f"SELECT chat_id FROM public.chats WHERE (user1 = {user1} AND user2 = {user2}) OR (user1 = {user2} AND user2 = {user1})"
+    logger.fromDatabase(QUERY)
 
     cursor = conn.cursor()
-
-    # check if both users exist
-    if not (check_userExistence_fromUserID(sender) & check_userExistence_fromUserID(receiver)):
-        return False
-
-    ## ADD CHAT TO DB
-
-    QUERY = f"INSERT INTO public.chats (user1,user2) VALUES ({sender},{receiver})" 
-    
-    logger.fromDatabase(QUERY)
-
-    try:
-        cursor.execute(QUERY)
-        conn.commit()
-    except:
-        logger.logDebug(str(traceback.format_exc()))
-        conn.rollback()
-        return False # cannot create chat
-    
-    QUERY = f"SELECT chat_id FROM public.chats WHERE user1 = {sender} AND user2 ={receiver}"
-    logger.fromDatabase(QUERY)
 
     try:
         cursor.execute(QUERY)
         result = cursor.fetchone()
+        cursor.close()
+
     except:
         logger.logDebug(str(traceback.format_exc()))
-        return False # error
     
-    cursor.close()
+    if result == None:
+        return False
+
+    return result[0]
+    
+def create_personalChat(user1,user2):
+
+    sender_response = {"type":"create_chat","create_chat":"True"}
+    logger.logDebug("Creazione chat...")
+
+    # check if both users exist
+    if not (check_userExistence_fromUserID(user1) & check_userExistence_fromUserID(user2)):
+        return False
+
+    logger.logDebug("Utenti esistono!")
+    
+    # check if chat already exists
+
+    chat_id = get_chatID_personalChat(user1,user2)
+    if(chat_id!=False):
+        return sender_response.update({"chat_id":chat_id})
+
+    logger.logDebug("Chat non esiste!")
+    
+    # chat doesnt exists, we will then create it 
+
+    ## ADD CHAT TO DB
+
+    QUERY = f"INSERT INTO public.chats (user1,user2) VALUES ({user1},{user2}); SELECT currval(pg_get_serial_sequence('public.chats','chat_id'));" 
+    logger.fromDatabase(QUERY)
+
+    cursor = conn.cursor()
+    try:
+        cursor.execute(QUERY)
+        conn.commit()
+        result = cursor.fetchone()
+        cursor.close()
+    except:
+        logger.logDebug(str(traceback.format_exc()))
+        conn.rollback()
+        return False # cannot create chat
 
     if result == None:
         return False
 
-    return result[0] 
+    return sender_response.update({"chat_id":result[0]})
 
 
 def create_group(group):

@@ -19,6 +19,7 @@
       - [init](#init)
       - [send_message](#send_message)
       - [receive_message](#receive_message)
+      - [create_chat](#create_chat)
       - [ack](#ack)
       - [update](#update)
 
@@ -284,6 +285,57 @@ No
 I campi contrassegnati da {valore} saranno sostituiti secondo l'esempio:
 
 da fare perchè sincero no voglia (al massimo conviene fare tipo un dictionary alla fine con la spiegazione generale e rimandare a quello ogni volta che viene nominato uno di questi termini, cosa molto frequente)
+
+### create_chat
+
+Per creare una qualsiasi chat (che sia personale, un gruppo o un canale [per ora funzionano solo le personali!!!!!!!!!!])
+
+#### Richiesta
+
+```
+{
+  "type": "create_chat",
+  "chatType":{chatType},
+  "handle":{handle} # OPTIONAL
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {chatType} = tipologia della chat da create, può essere:
+  + personal -> per le chat personali (NECESSITA DEL CAMPO {handle} per identificare il secondo utente)
+  + group -> non 
+  + channel -> esistono (per ora)
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "type": "create_chat",
+  "create_chat": "False"
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ Internal Server Error
++ ???
+
+##### - 2. 
+
+```
+{
+  "type": "create_chat",
+  "create_chat": "True",
+  "chat_id": {chat_id}
+}
+```
+
+I campi contrassegnati da {valore} saranno sostituiti secondo l'esempio:
+
++ {chat_id} = da fare il mega dictionary
 
 ### ack
 
