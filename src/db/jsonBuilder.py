@@ -16,7 +16,7 @@ def message(message_id,chat_id,text,sender,date):
         "message_id":message_id,
         "chat_id":chat_id,
         "text":text,
-        "sender":sender,
+        "sender":str(sender),
         "date":str(date)
     }
 
