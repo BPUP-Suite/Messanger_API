@@ -35,7 +35,7 @@
 
         // Inizializza l'EventSource per ricevere i log in tempo reale
         const logContainer = document.getElementById('logContainer');
-        const eventSource = new EventSource('/admin/stream');
+        const eventSource = new EventSource('/admin/logs/stream');
 
         // Ascolta i messaggi dal server
         eventSource.onmessage = function(event) {

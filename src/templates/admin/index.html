@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Main</title>
+    <script>
+        function riavviaApplicazione() {
+            // Invia una richiesta al server per riavviare l'applicazione
+            fetch('/admin/api/methods/reboot')
+                alert('Applicazione riavviata con successo!');
+        }
+    </script>
+</head>
+<body>
+    <h1>Mostra logs</h1>
+    <button><a href="./admin/logs">Apri</a></button>
+    <h1>Riavvia Applicazione</h1>
+    <button onclick="riavviaApplicazione()">Riavvia</button>
+</body>
+</html>

@@ -31,7 +31,15 @@
 aggiungi conn.rollback() a tutti gli statement di insert into che potrebbe dare problemi
 sistema la documentazione sottostante con le cosine nuove
 
-spostare tutti messages su una lista a parte per evitare for dentro for lato client (e anche server effettivamente) OTTIMIZZAZIONEHH
+inserisci tantissime tipologie di controlli:
+  1) su campi mancanti necessari (che restituisce la tipologia di errore in "reason" e magari vedere se impementere dei codici di errore personalizzati per l'app o usare quelli html)
+  2) payload troppo grandi
+  3) testi troppo lungi (send_message -> text, signup -> qualsiasi campo, login -> user | pass, check-handle )
+    da capire i limiti, per ora:
+      text: 2056
+      psw: 256 
+      handle: 64
+      nome,cognome,... ???
 
 ##
 

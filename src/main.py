@@ -245,13 +245,13 @@ templates = Jinja2Templates(directory="templates")
 # ADMIN LOG PANEL
 
 # Route to serve the webpage
-@app.get("/admin", response_class=HTMLResponse)
+@app.get("/admin/logs", response_class=HTMLResponse)
 async def admin_page(request: Request):
     logs = load_logs_from_file()  # Load logs from the file
     return templates.TemplateResponse("admin/logs/index.html", {"request": request, "logs": logs})
 
 # Stream logs to the admin page
-@app.get("/admin/stream")
+@app.get("/admin/logs/stream")
 async def stream():
     return StreamingResponse(toStream(), media_type='text/event-stream')
 
@@ -271,6 +271,26 @@ def load_logs_from_file(log_file: str = "logs/log.txt"):
 @app.get("/welcome", response_class=HTMLResponse)
 async def welcome_page(request: Request):
     return templates.TemplateResponse("welcome/index.html", {"request": request})
+
+# Action page
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_page(request: Request):
+    return templates.TemplateResponse("admin/index.html", {"request": request})
+
+# Reboot api
+
+@app.get('/admin/api/methods/reboot')
+def riavvia():
+    import os,sys
+    logDebug("Richiesta reboot")
+    try:
+        logDebug("fatto")
+        os.execv(sys.executable, ['python'] + sys.argv)
+        return json.dumps({'success': True})
+    except Exception as e:
+        logDebug(f"Errore durante il riavvio: {e}")
+        return json.dumps({'success': False, 'error': str(e)})
 
 ## STARTING APPLICATION
 
