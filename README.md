@@ -221,7 +221,7 @@ Per mandare un messaggio ad una qualsiasi chat (può anche creare una chat priva
   "type": "send_message",
   "text":{text},
   "chat_id":{chat_id},
-  "salt":{salt}
+  "salt":{salt} # OPTIONAL
 }
 ```
 
@@ -265,7 +265,7 @@ I campi contrassegnati da {valore} saranno sostituiti secondo l'esempio:
 
 + {date_time} = ora locale (ottenuta server-side) della forma AAAA-MM-GG HH-MM-SS.MSMSMS (esempio: 2024-11-20 14:06:08.116420)
 + {message_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, all'invio di un nuovo messaggio
-+ {hash} = valore calcolato a partire dal testo del messaggio per identificare univocamente il messaggio quando viene mandata la conferma di invio del messaggio con relativi dati extra forniti dal server al client (in pratica è un message_id temporaneo usato dal client generato sia lato client che lato server)
++ {hash} = valore calcolato a partire dal testo del messaggio per identificare univocamente il messaggio quando viene mandata la conferma di invio del messaggio con relativi dati extra forniti dal server al client (in pratica è un message_id temporaneo usato dal client generato sia lato client che lato server). Viene calcolato solo se il {salt} nella richiesta viene mandato.
 
 ### receive_message
 
