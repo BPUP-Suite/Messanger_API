@@ -81,7 +81,12 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                        raise Exception("Message too long")
 
                     chat_id = json.getValue(data,"chat_id")
-                    salt = json.getValue(data,"salt")
+
+                    try:
+                        salt = json.getValue(data,"salt")
+                    except Exception as e:
+                        salt = False
+                        logDebug("No salt provided OR error: "+str(traceback.format_exc())) 
 
                     message = object.Message(chat_id,text,user_id,None)
 
@@ -100,8 +105,10 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                             await connection.send_text(json.dumps(response_receiver))
                             except Exception as e:
                                 logDebug("No users active for "+str(receiver)+" or error: "+str(traceback.format_exc())) 
+                        
+                        if salt != False:
+                            response_sender.update({'hash': generate_hash(text,salt)})
 
-                        response_sender.update({'hash': generate_hash(text,salt)})
                         response = response_sender
                     
                     if(type == "create_chat"):
