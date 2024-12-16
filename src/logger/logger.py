@@ -30,7 +30,7 @@ def fromDatabase(text):
     toConsole("DATABASE: "+text)
 
 def logDebug(text):
-    toConsole("######## DEBUG INFO: "+text)
+    toConsole("######## DEBUG INFO: "+str(text))
 
 import queue
 log_queue = queue.Queue()

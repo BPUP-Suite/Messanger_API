@@ -18,7 +18,6 @@ POSTGRESQL_PORT = envManager.read_postgresql_port()
 
 conn = psycopg2.connect(dbname=POSTGRESQL_DB, user=POSTGRESQL_USER, password=POSTGRESQL_PASSWORD, host=POSTGRESQL_HOST, port=POSTGRESQL_PORT) 
 
-
 def exist():
     
     cursor = conn.cursor()
@@ -467,18 +466,24 @@ def get_receiver_personalChat(chat_id,sender):
 
     cursor = conn.cursor()
 
-    QUERY = f"SELECT user1,user2 FROM public.chats WHERE chat_id = {chat_id} AND user1 = {sender} OR user2 = {sender}"
+    QUERY = f"SELECT user1,user2 FROM public.chats WHERE chat_id = {chat_id} AND (user1 = {sender} OR user2 = {sender})"
 
     logger.fromDatabase(QUERY)
 
-    cursor.execute(QUERY)
-    result = cursor.fetchone()
+    try:
+        cursor.execute(QUERY)
+        result = cursor.fetchone()
 
-    if(result[0] == sender):
-        return result[1]
-    if(result[1] == sender):
-        return result[0]
+        if(result[0] == sender):
+            receiver = result[1]
+        if(result[1] == sender):
+            receiver = result[0]
 
+        cursor.close()
+    except:
+        logger.logDebug(str(traceback.format_exc()))
+    
+    return str(receiver)
 
 def send_message(message):
 
@@ -504,7 +509,7 @@ def send_message(message):
 
     if(type == "chat"):
 
-        receivers.append(get_receiver_personalChat(chat_id,sender)) # NON FUNZIONA 
+        receivers.append(str(get_receiver_personalChat(chat_id,sender)))
 
     if(type == "group"):
 
@@ -544,7 +549,6 @@ def send_message(message):
 
     ## SECOND PHASE: CREATE JSON MESSAGE FOR RESPONSE
 
-    sender = user_group_channel_fromID_toHandle(sender) # convert sender user_id to his handle
     response_receiver = jsonBuilder.message_to_receiver(message_id,chat_id,text,sender,date)
 
     ## THIRD PHASE: RETURN ALL TO MAIN AND SENDS MESSAGES TO ALL 
