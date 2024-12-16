@@ -98,8 +98,8 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                         for receiver in receivers:
                             try:
+                                logDebug("Receivers: "+receivers)
                                 if receiver != None:
-                                    logDebug("Receivers: "+receivers)
                                     for connection in active_connections[receiver]:
                                         if connection != websocket: 
                                             logDebug(" receive_message :" + "  Receiver: "+receiver + "  Risposta: "+ str(response_receiver))
