@@ -480,10 +480,13 @@ def get_receiver_personalChat(chat_id,sender):
             receiver = result[0]
 
         cursor.close()
-    except:
-        logger.logDebug(str(traceback.format_exc()))
+
+        return str(receiver)  
     
-    return str(receiver)
+    except:
+        logger.logDebug(str(traceback.format_exc()))  
+
+    return None
 
 def send_message(message):
 
