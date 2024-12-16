@@ -88,7 +88,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                         salt = False
                         logDebug("No salt provided OR error: "+str(traceback.format_exc())) 
 
-                    message = object.Message(chat_id,text,user_id,None)
+                    message = object.Message(chat_id,text,str(user_id),None)
 
                     response_sender,response_receiver,receivers = database.send_message(message)
 

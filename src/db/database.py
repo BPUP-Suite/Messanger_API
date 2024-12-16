@@ -474,14 +474,14 @@ def get_receiver_personalChat(chat_id,sender):
         cursor.execute(QUERY)
         result = cursor.fetchone()
 
-        if(result[0] == sender):
-            receiver = result[1]
-        if(result[1] == sender):
-            receiver = result[0]
+        if(str(result[0]) == sender):
+            receiver = str(result[1])
+        if(str(result[1]) == sender):
+            receiver = str(result[0])
 
         cursor.close()
 
-        return str(receiver)  
+        return receiver
     
     except:
         logger.logDebug(str(traceback.format_exc()))  
@@ -512,7 +512,7 @@ def send_message(message):
 
     if(type == "chat"):
 
-        receivers.append(str(get_receiver_personalChat(chat_id,sender)))
+        receivers.append(get_receiver_personalChat(chat_id,sender))
 
     if(type == "group"):
 
