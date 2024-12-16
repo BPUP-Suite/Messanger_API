@@ -504,7 +504,7 @@ def send_message(message):
 
     if(type == "chat"):
 
-        receivers.append(get_receiver_personalChat(chat_id,sender)) # NON FUNZIONA
+        receivers.append(get_receiver_personalChat(chat_id,sender)) # NON FUNZIONA 
 
     if(type == "group"):
 
