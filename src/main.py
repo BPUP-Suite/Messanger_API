@@ -96,17 +96,21 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                         # SEND MESSAGE TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
 
+                        count = 0
                         for receiver in receivers:
                             try:
                                 logDebug("Receivers: "+str(receivers))
                                 if receiver != None:
                                     for connection in active_connections[receiver]:
                                         if str(connection) != str(websocket): 
+                                            count+=1
                                             logDebug(" receive_message :" + "  Receiver: "+receiver + "  Risposta: "+ str(response_receiver))
                                             await connection.send_text(json.dumps(response_receiver))
                             except Exception as e:
                                 logDebug("No users active for "+str(receiver)+" or error: "+str(traceback.format_exc())) 
-                        
+                            finally:
+                                logDebug("MESSAGGI DI RISPOSTA: "+count)
+
                         if salt != False:
                             response_sender.update({'hash': generate_hash(text,salt)})
 
