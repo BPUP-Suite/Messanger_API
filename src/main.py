@@ -101,7 +101,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                                 logDebug("Receivers: "+str(receivers))
                                 if receiver != None:
                                     for connection in active_connections[receiver]:
-                                        if connection != websocket: 
+                                        if str(connection) != str(websocket): 
                                             logDebug(" receive_message :" + "  Receiver: "+receiver + "  Risposta: "+ str(response_receiver))
                                             await connection.send_text(json.dumps(response_receiver))
                             except Exception as e:
