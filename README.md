@@ -15,6 +15,11 @@
     - [Docker](#DOCKER)
     - [Database](#DATABASE)
     - [API](#API)
+      - [access](#access)
+      - [signup](#signup)
+      - [login](#login)
+      - [check-handle-availability](#check-handle-availability)
+      - [get-user-id](#get-user-id)
     - [WebSocket](#WebSocket)
       - [init](#init)
       - [send_message](#send_message)
@@ -22,6 +27,7 @@
       - [create_chat](#create_chat)
       - [ack](#ack)
       - [update](#update)
+    - [Admin][#Admin]
 
 
 
@@ -72,8 +78,7 @@ Entitá:
     - ...
     (anche questo da completare ma non ricordo db :D )
 
-
-## API
+## CODICE (da togliere)
 
 
 Tutto dentro /src/
@@ -153,6 +158,198 @@ Utilizzo principale della libreria di FastAPI (sia lodato il cielo che non mi to
 
 Per la documentazione relativa a questa parte basta far partire il container ed entrare all'indirizzo localhost:8000/docs (indicativo, non è detto sia localhost per voi, potrebbe cambiare IP, porta, non la folder :D ) (penserò anche a lasciare disponibile la pagina html in qualche folder, così non me tocca far partire il container ogni volta -UPDATE 21/10/24 e ancora no fatto-)
 Aggiunta anche la sezione relativa a websocket all'inizio del file
+
+## API
+
+LA SEGUENTE DOCUMENTAZIONE ANCHE SE PARZIALMENTE AGGIORNATA NON RISPECCHIO IL CODICE ATTUALE IN QUANDO SONO NECESSARIE ULTERIORI MODIFICHE PER GARANTIRE UN'OMOGENIETA' DEI TITOLI USATI PER LE VARIABILI MA ANCHE UNA GESTIONE PIU' ACCURATA DEGLI ERRORI (CON ANCHE MESSAGGIO DI ERRORE INCLUSO)
+
+### access
+
+Permette di capire se una determinata e-mail è stata già utilizzata, ritornando il tipo di azione che l'utente deve compiere per accedere alla piattaforma.
+
+#### Richiesta
+
+```
+{
+  "email": {email}
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {email} = indirizzo e-mail della forma name@domain.example
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "access_type": false
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ Internal Server Error
+
+##### - 2. 
+
+```
+{
+  "access_type": {access_type}
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {access_type} = tipo di accesso che dovrà eseguire l'utente:
+ 1) signup
+ 2) login
+
+### signup
+
+Permette la registrazione dell'utente sulla piattaforma.
+
+#### Richiesta
+
+```
+{
+  "email": {email},
+  "name": {name},
+  "surname": {surname},
+  "handle": {handle},
+  "password": {password}
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {email} = indirizzo e-mail della forma name@domain.example
++ {name} = nome dell'utente
++ {surname} = cognome dell'utente
++ {handle} = nickname UNICO dell'utente (da usare #check-handle-availability per verificare che sia disponibile)
++ {password} = !!!!DA INSERIRE I PARAMETRI MINIMI PER AVERE UNA PASS SICURA!!! (con conseguente aggiunta di tutti gli errori possibili specifici per ogni richiesta)
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "signed_up": false
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ E-mail già registrata
++ Handle già utilizzato
++ Password non abbastanza sicura
++ Internal Server Error
+
+##### - 2. 
+
+```
+{
+  "signed_up": true
+}
+```
+
+### login
+
+Permette l'accesso dell'utente già registrato sulla piattaforma.
+
+#### Richiesta
+
+```
+{
+  "email": {email},
+  "password": {password}
+}
+```
+
+Esempio: 
+
+```
+{}/user/action/login?email=name@domain.example&password=Password123!
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {email} = indirizzo e-mail della forma name@domain.example
++ {password} = password associata all'indirizzo e-mail
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "logged_in": false,
+  "api_key": None
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ E-mail non registrata
++ Combinazione e-mail e password non esiste
++ Internal Server Error
+
+##### - 2. 
+
+```
+{
+  "logged_in": true,
+  "api_key": {api_key}
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {api_key} = stringa unica di caratteri per ogni utente che permette l'accesso al websocket
+
+### check-handle-availability
+
+Permette di capire se un determinato handle è già stato utilizzato o meno.
+
+#### Richiesta
+
+```
+{
+  "handle": {handle}
+}
+```
+
+Esempio: 
+
+```
+{}/user/action/check-handle-availability?handle=example
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {handle} = nickname UNICO dell'utente
+
+#### Risposta
+
+##### - 1. 
+
+```
+{
+  "handle_available": {handle_available}
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {handle_available} = valore booleano con i seguenti significati:
+  1) true: handle NON utilizzato e quindi DISPONIBILE
+  2) false: handle UTILIZZATO e quindi NON disponibile (inoltre potrebbe anche indicare la presenza di errori lato server)
+
+### get-user-id
+ MANCA DA FARE
 
 ## WebSocket
 
@@ -352,5 +549,9 @@ TDB
 ### update
 
 TDB
+
+## Admin
+
+DA aggiornare, conterrà tutte le pagine e credeziali di accesso per gli amministratori
 
 
