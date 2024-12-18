@@ -363,7 +363,7 @@ def check_userExistence_fromUserID(user_id):
 
     return confirmation
 
-def user_login_check(loginUser):
+def user_login(loginUser):
 
     email = loginUser.email
     password = loginUser.password

@@ -207,14 +207,15 @@ async def main(email:str,password:str):
 
     # no api check needed
 
-    type = "api_key"
+    type = "logged_in"
 
     loginUser = object.LoginUser(email,password) # create LoginUser obj used in databases method (using only email and password)
+    api_key = database.user_login(loginUser) 
 
-    api_key = database.user_login_check(loginUser) 
-    # api-key: login approved | false: login failed
+    if not(api_key):
+        return {type: False,"api_key":None}
 
-    return {type: api_key}
+    return {type: True,"api_key":api_key}
 
 
 

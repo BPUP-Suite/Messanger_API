@@ -349,7 +349,53 @@ I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
   2) false: handle UTILIZZATO e quindi NON disponibile (inoltre potrebbe anche indicare la presenza di errori lato server)
 
 ### get-user-id
- MANCA DA FARE
+
+Permette l'accesso dell'utente già registrato sulla piattaforma.
+
+#### Richiesta
+
+```
+{
+  "api_key":{api_key}
+}
+```
+
+Esempio: 
+
+```
+{}/user/action/get-user-id?api_key=63iuhgfs7yUHBFYID79gfdskjnsd89...
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {api_key} = api key dell'utente ottenuta tramite il metodo [login](#login)
+
+#### Risposta
+
+##### - 1. Errore
+
+```
+{
+  "user_id": None
+}
+```
+
+Richista fallita per uno dei seguenti motivi:
+
++ api key non esiste
++ Internal Server Error
+
+##### - 2. 
+
+```
+{
+  "user_id": {user_id}
+}
+```
+
+I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
+
++ {user_id} = id unico dell'utente (permette l'accesso al [websocket](#Websocket))
 
 ## WebSocket
 
