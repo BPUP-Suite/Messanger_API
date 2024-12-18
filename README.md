@@ -47,6 +47,8 @@ inserisci tantissime tipologie di controlli:
       handle: 64
       nome,cognome,... ???
 
+  DA MODIFICARE LA DOCUMENTAZIONE CON L'AGGIUNTA DI UN DIZIONARIO FINALE PER EVITARE CONTINUE RIPETIZIONI NELLA DEFINIZIONE DEI PARAMETRI (+ IP ADDRESS NEGLI EXAMPLE DI API)
+
 ##
 
 API per l`app di messaggistica
