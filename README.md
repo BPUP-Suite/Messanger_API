@@ -193,6 +193,7 @@ I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
 
 Richista fallita per uno dei seguenti motivi:
 
++ Non è stata inserita un e-mail valida
 + Internal Server Error
 
 ##### - 2. 

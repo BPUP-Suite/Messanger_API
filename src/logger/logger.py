@@ -18,6 +18,9 @@ def logAPIRequest(username,resource,value):
     text = f"{username} -> {resource} -> {value}"
     toConsole(text)
 
+def logAPIError(email,type,error):
+    logAPIRequest(email,type,error)
+
 def logWSConnection(user_id,wb_counter,message):
     text = f"WB -> {message} -> {user_id} ({wb_counter} wb attivi!)"
     toConsole(text)

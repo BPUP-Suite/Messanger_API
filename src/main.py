@@ -12,8 +12,9 @@ import traceback
 import db.database as database
 import db.object as object
 from security.encrypter import generate_hash,generate_password_hash
-from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage, logDebug, toStream
+from logger.logger import logAPIRequest, logWSConnection, toConsole, logWSMessage, logDebug, toStream, logAPIError
 import db.jsonBuilder as json
+import db.validator as validator
 
 app = FastAPI()
 
@@ -179,13 +180,27 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 @app.get("/user/action/access")
 async def main(email:str):
 
-    # no api check needed
-
     type = "access_type"
-    accessType = "signup"
 
-    if database.check_userExistence_fromEmail(email):
-        accessType = "login"
+    if not validator.email(email):
+
+        error = "Not a valid e-mail"
+        logAPIError(email,type,error)
+
+        return {type: False, "error" : error}
+
+    try: 
+        if database.check_userExistence_fromEmail(email):
+            accessType = "login"
+        else:
+            accessType = "signup"
+            
+    except:
+
+        error = "Internal Server Error"
+        logAPIError(email,type,error)
+
+        return {type: False, "error" : error}
 
     logAPIRequest(email,type,accessType)
 
@@ -197,8 +212,6 @@ async def main(email:str):
 
 async def main(email:str,name:str,surname:str,handle:str,password:str):
 
-    # no api check needed
-
     type = "signed_up"
     confirmation = False
 
@@ -207,14 +220,12 @@ async def main(email:str,name:str,surname:str,handle:str,password:str):
     confirmation = database.add_user_toDB(user) # return True: Signup OK | False: Some error occurred, retry
     logAPIRequest(user.handle,type,confirmation)
 
-    return {type: confirmation} # ritorna true: registrazione effettuata | false: errore, per qualche motivo (non si sa quale)
+    return {type: confirmation} # ritorna true: registrazione effettuata | false: errore, per qualche motivo (non si sa quale :3)
 
 
 
 @app.get("/user/action/login")
 async def main(email:str,password:str):
-
-    # no api check needed
 
     type = "logged_in"
 
@@ -231,8 +242,6 @@ async def main(email:str,password:str):
 @app.get("/user/action/check-handle-availability")
 async def main(handle:str):
 
-    # no api check needed
-
     type = "handle_available"
     confirmation = False
 
@@ -245,8 +254,6 @@ async def main(handle:str):
 
 @app.get("/user/action/get-user-id")
 async def main(api_key:str):
-
-    # no api check needed
 
     type = "user_id"
     
