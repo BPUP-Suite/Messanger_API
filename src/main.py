@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.websockets import WebSocket,WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 
 from typing import Dict, List
 import traceback
@@ -16,6 +17,14 @@ import db.jsonBuilder as json
 
 app = FastAPI()
 
+# Configura CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permette richieste da qualsiasi dominio
+    allow_credentials=True,
+    allow_methods=["*"],  # Permette tutte le richieste HTTP (GET, POST, ecc.)
+    allow_headers=["*"],  # Permette tutti gli header
+)
 
 toConsole("----------------------------------------------------------")
 toConsole("API started!")

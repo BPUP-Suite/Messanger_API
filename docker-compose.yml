@@ -14,24 +14,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin4_container
-    restart: unless-stopped
-    ports:
-      - 8888:80
-    env_file:
-      - .env
-    volumes:
-      - ./data/pgadmin:/var/lib/pgadmin
-    environment:
-        PGADMIN_CONFIG_PROXY_X_HOST_COUNT: 1
-        PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT: 1
-    depends_on:
-      db:
-        condition: service_healthy
-
   api:
     build:
       context: .
@@ -43,20 +25,7 @@ services:
     volumes:
       - ./data/api/logs:/usr/src/app/logs
       - ./data/api/data:/usr/src/app/data
-    restart: unless-stopped
+    restart: unless-stopped1
     depends_on:
       db:
         condition: service_healthy
-  
-  nginx:
-    restart: unless-stopped
-    image: jc21/nginx-proxy-manager:latest
-    ports:
-      - 80:80
-      - 81:81 # admin page
-      - 443:443
-    volumes:
-      - ./data/nginx:/data
-      - ./data/nginx-local:/etc/letsencrypt
-    depends_on:
-      - api
