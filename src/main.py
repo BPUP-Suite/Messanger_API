@@ -119,7 +119,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
                             except Exception as e:
                                 logDebug("No users active for "+str(receiver)+" or error: "+str(traceback.format_exc())) 
                             finally:
-                                logDebug("MESSAGGI DI RISPOSTA: "+count)
+                                logDebug("MESSAGGI DI RISPOSTA: "+str(count))
 
                         if salt != False:
                             response_sender.update({'hash': generate_hash(text,salt)})
@@ -189,12 +189,12 @@ async def main(email:str):
 
         return {type: False, "error" : error}
 
-    try: 
+    try:    	
         if database.check_userExistence_fromEmail(email):
             accessType = "login"
         else:
             accessType = "signup"
-            
+
     except:
 
         error = "Internal Server Error"
@@ -215,9 +215,17 @@ async def main(email:str,name:str,surname:str,handle:str,password:str):
     type = "signed_up"
     confirmation = False
 
-    password = generate_password_hash(password) # hashed password
-    user = object.User(email,name,surname,handle,password) # create User obj used in databases method
-    confirmation = database.add_user_toDB(user) # return True: Signup OK | False: Some error occurred, retry
+    try:    	
+        password = generate_password_hash(password) # hashed password
+        user = object.User(email,name,surname,handle,password) # create User obj used in databases method
+        confirmation = database.add_user_toDB(user) # return True: Signup OK | False: Some error occurred, retry  
+    except:
+
+        error = "Internal Server Error"
+        logAPIError(email,type,error)
+
+        return {type: False, "error" : error}
+
     logAPIRequest(user.handle,type,confirmation)
 
     return {type: confirmation} # ritorna true: registrazione effettuata | false: errore, per qualche motivo (non si sa quale :3)
