@@ -10,6 +10,11 @@
             fetch('/admin/api/methods/reboot')
                 alert('Applicazione riavviata con successo!');
         }
+        function chiudiWebSockets() {
+            // Invia una richiesta al server per riavviare l'applicazione
+            fetch('/admin/api/methods/close-ws')
+                alert('Websockets chiuse con successo!');
+        }
     </script>
 </head>
 <body>
@@ -17,5 +22,9 @@
     <button><a href="./admin/logs">Apri</a></button>
     <h1>Riavvia Applicazione</h1>
     <button onclick="riavviaApplicazione()">Riavvia</button>
+    <h1>Chiudi Web Sockets</h1>
+    <button onclick="chiudiWebSockets()">Chiudi</button>
 </body>
 </html>
+
+

@@ -326,6 +326,27 @@ def riavvia():
         logDebug(f"Errore durante il riavvio: {e}")
         return json.dumps({'success': False, 'error': str(e)})
 
+@app.get('/admin/api/methods/close-ws')
+def chiudi_ws():
+    import os,sys
+    logDebug("Chisura di tutti i websocket")
+    try:
+        logDebug("fatto, chiusura ws")
+        for user_id, websockets in active_connections.items():
+            for websocket in websockets:
+                try:
+                   websocket.close() 
+                except Exception as e:
+                    print(f"Errore durante la chiusura del WebSocket per {user_id}: {e}")
+
+        active_connections[user_id] = []
+
+
+        return json.dumps({'success ws': True})
+    except Exception as e:
+        logDebug(f"Errore durante la chiusura ws: {e}")
+        return json.dumps({'success': False, 'error': str(e)})
+    
 ## STARTING APPLICATION
 
 if __name__ == "__main__":
