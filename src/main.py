@@ -65,8 +65,9 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   logWSConnection(user_id,len(active_connections[user_id]),"Opened")
   try:
     while True:
-        logDebug("Nuovo ascolto di comunicazioni per "+user_id)
+        
         data = await websocket.receive_text()
+
         if data != None:
             logDebug( user_id+" -WS> "+json.dumps(data))
             try:
