@@ -339,8 +339,7 @@ def chiudi_ws():
                 except Exception as e:
                     print(f"Errore durante la chiusura del WebSocket per {user_id}: {e}")
 
-        active_connections[user_id] = []
-
+            active_connections[user_id] = []
 
         return json.dumps({'success ws': True})
     except Exception as e:
