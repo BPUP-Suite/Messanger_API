@@ -68,14 +68,13 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
         if data != None:
 
-            logDebug(user_id+" -WS> "+json.dumps(data))
+            logDebug( +" -WS> "+json.dumps(data))
 
             try:
                 type = json.getValue(data,"type")
 
                 # INITIALIZE CLIENT DATABASE
                 if(type == "init"):
-
                     response = database.clientDB_init(user_id)
                 
                 # SEND MESSAGE TO EVERY SENDER AND RECEIVER DEVICES

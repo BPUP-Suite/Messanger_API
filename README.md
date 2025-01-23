@@ -425,8 +425,7 @@ Per inizializzare il database locale del client, ritorna una file json con tutte
 
 ```
 {
-  "type": "init",
-  "api_key":{api_key}
+  "type": "init"
 }
 ```
 
