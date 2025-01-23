@@ -1,8 +1,8 @@
 import os
 import hashlib
 
-from src.security.envManager import read_salt
-from src.security.envManager import write_salt
+from security.envManager import read_salt
+from security.envManager import write_salt
 
 SALT = read_salt()
 if(not(SALT)):
