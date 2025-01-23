@@ -50,7 +50,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
   confirmation = (database.get_userHandle_from_apiKey(api_key) == database.user_group_channel_fromID_toHandle(user_id))
 
   if not confirmation:
-      logDebug("Connessione chiusa per"+user_id+". Non dispone delle autorizzazioni per entrare")
+      logDebug("Connessione chiusa per "+user_id+". Non dispone delle autorizzazioni per entrare")
       logWSConnection(user_id,len(active_connections[user_id]),"Closed")
       await websocket.close(code=3000) # Not authorized
 
