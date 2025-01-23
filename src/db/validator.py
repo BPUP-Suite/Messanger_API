@@ -22,7 +22,7 @@ def password(password:str):
         if not re.search("[$#@!?]", password):
             return False
         # Password should not contain any whitespace character
-        if re.search("\s", password):
+        if re.search(r"\s", password):
             return False
         else:
             # If all conditions are met
