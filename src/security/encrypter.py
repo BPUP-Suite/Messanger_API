@@ -12,10 +12,10 @@ if(not(SALT)):
 
 def generate_hash(digest,salt):
 
-    bytes = digest.encode('utf-8') 
-    salt = bytes.fromhex(salt)
+    digestBytes = digest.encode('utf-8') 
+    saltBytes = bytes.fromhex(salt)
 
-    salted_digest = salt + bytes
+    salted_digest = saltBytes + digestBytes
     
     hash_object = hashlib.sha256(salted_digest)
     hash = hash_object.hexdigest()

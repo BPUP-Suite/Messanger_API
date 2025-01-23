@@ -475,7 +475,19 @@ I campi contrassegnati da {valore} devono essere sostituiti secondo l'esempio:
 
 + {text} = semplicissimo testo (max 2056 caratteri)
 + {chat_id} = sequenza di numeri ottenuta da [init](#init), da [update](#update)/da questo stesso metodo, alla creazione di una nuova chat
-+ {salt} = utilizzato per calcolare l'hash del messaggio (utilizzando il testo) e ritornandolo al client per verificare che il messaggio riferito alle informazioni sia lo stesso
++ {salt} = utilizzato per calcolare l'hash del messaggio (utilizzando il testo) e ritornandolo al client per verificare che il messaggio riferito alle informazioni sia lo stesso. La funzione per generare l'hash è la seguente: (abbiamo perso anni per capire come implementarla anche su React, perché bisogna fare attenzione a unire salt e digest mentre sono bytes, convertirli come bytes e dopo decodificarli in una stringa esadecimale [bisogna anche fare in modo di passare come salt la stringa esadecimale])
+
+```
+    digestBytes = digest.encode('utf-8') 
+    saltBytes = bytes.fromhex(salt)
+
+    salted_digest = saltBytes + digestBytes
+    
+    hash_object = hashlib.sha256(salted_digest)
+    hash = hash_object.hexdigest()
+
+    return hash
+```
 
 #### Risposta
 
