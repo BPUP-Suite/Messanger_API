@@ -126,43 +126,43 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                         response = response_sender
                     
-                    if(type == "create_chat"):
-                        response = {"type":"create_chat","create_chat":"False"}
+                if(type == "create_chat"):
+                    response = {"type":"create_chat","create_chat":"False"}
 
-                        chatType = json.getValue(data,"chatType")
+                    chatType = json.getValue(data,"chatType")
 
-                        if(chatType == "personal"):
-                            handle_receiver = json.getValue(data,"handle")
-                            user_id_receiver = database.user_group_channel_fromHandle_toID(handle_receiver)
-                            sender_response = database.create_personalChat(user_id,user_id_receiver)
-                        else:
-                            sender_response = False
+                    if(chatType == "personal"):
+                        handle_receiver = json.getValue(data,"handle")
+                        user_id_receiver = database.user_group_channel_fromHandle_toID(handle_receiver)
+                        sender_response = database.create_personalChat(user_id,user_id_receiver)
+                    else:
+                        sender_response = False
 
-                        if(sender_response != False):
-                            response = sender_response
+                    if(sender_response != False):
+                        response = sender_response
 
-                    # ACK (?) (DA MODIFICARE) (NOT-TESTED) #confirm read of messages
-                    if(type == "ack"):
-                        response = {"type":"ack","ack":True}
+                # ACK (?) (DA MODIFICARE) (NOT-TESTED) #confirm read of messages
+                if(type == "ack"):
+                    response = {"type":"ack","ack":True}
 
-                        message_id = json.getValue(data,"message_id")
-                        
-                        # datetime needed ??
-                        
-                        json_message,receivers = database.ack(user_id,message_id)
+                    message_id = json.getValue(data,"message_id")
+                    
+                    # datetime needed ??
+                    
+                    json_message,receivers = database.ack(user_id,message_id)
 
-                        if(json_message != False):
+                    if(json_message != False):
 
-                            ### MOVE IN A METHOD
-                            # SEND ACK TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
+                        ### MOVE IN A METHOD
+                        # SEND ACK TO RECEIVER AND SENDER CLIENTS (excluded who send msg)
 
-                            for receiver in receivers:
-                                try:
-                                    for connection in active_connections[receiver]:
-                                        if connection != websocket:
-                                            await connection.send_text(json_message)
-                                except:
-                                    logDebug("No users active for "+receiver) 
+                        for receiver in receivers:
+                            try:
+                                for connection in active_connections[receiver]:
+                                    if connection != websocket:
+                                        await connection.send_text(json_message)
+                            except:
+                                logDebug("No users active for "+receiver) 
 
                 logWSMessage(user_id,"Risposta inviata: "+json.dumps(response)+" \n Per richiesta: "+json.dumps(data))
                 await websocket.send_text(json.dumps(response))
