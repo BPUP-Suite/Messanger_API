@@ -56,25 +56,21 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
   # Add the websocket connection to the active connections for the room
   if user_id not in active_connections:
+      logDebug("Primo utente ws per "+user_id)
       active_connections[user_id] = []
     
   active_connections[user_id].append(websocket)
 
   await websocket.accept()
   logWSConnection(user_id,len(active_connections[user_id]),"Opened")
-
   try:
     while True:
         logDebug("Nuovo ascolto di comunicazioni per "+user_id)
         data = await websocket.receive_text()
-
         if data != None:
-
-            logDebug( +" -WS> "+json.dumps(data))
-
+            logDebug( user_id+" -WS> "+json.dumps(data))
             try:
                 type = json.getValue(data,"type")
-
                 # INITIALIZE CLIENT DATABASE
                 if(type == "init"):
                     response = database.clientDB_init(user_id)
@@ -167,7 +163,6 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
                 logWSMessage(user_id,"Risposta inviata: "+json.dumps(response)+" \n Per richiesta: "+json.dumps(data))
                 await websocket.send_text(json.dumps(response))
-
             except:
                 logDebug(str(traceback.format_exc()))
                 logWSMessage(user_id,"Messaggio invalido: "+json.dumps(data))
@@ -175,7 +170,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
   except WebSocketDisconnect:
       active_connections[user_id].remove(websocket)
-      logDebug("Websocket disconnessa per "+user_id)
+      logDebug("Websocket disconnessa per "+user_id+" oppure errore "+str(traceback.format_exc()))
       pass
 
 
