@@ -65,6 +65,7 @@ async def websocket_endpoint(user_id:str, api_key:str, websocket: WebSocket): # 
 
   try:
     while True:
+        logDebug("Nuovo ascolto di comunicazioni per "+user_id)
         data = await websocket.receive_text()
 
         if data != None:
