@@ -1,21 +1,24 @@
-import bcrypt # password hash
+import os
+import hashlib
 
-from security.envManager import read_salt
-from security.envManager import write_salt
+from src.security.envManager import read_salt
+from src.security.envManager import write_salt
 
-SALT = read_salt().decode('utf-8')
+SALT = read_salt()
 if(not(SALT)):
-    SALT = bcrypt.gensalt(5) # penserò alla privacy in futuro :D
+    SALT = os.urandom(16)
+    SALT = SALT.hex()
     write_salt(SALT)
 
 def generate_hash(digest,salt):
 
     bytes = digest.encode('utf-8') 
-    salt = salt.encode('utf-8')
-    
-    hash = bcrypt.hashpw(bytes,salt)
+    salt = bytes.fromhex(salt)
 
-    hash = hash.decode('utf-8')
+    salted_digest = salt + bytes
+    
+    hash_object = hashlib.sha256(salted_digest)
+    hash = hash_object.hexdigest()
 
     return hash
 

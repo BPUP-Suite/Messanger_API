@@ -63,13 +63,11 @@ def read_salt():
     if SALT is None:
         return False
     
-    return SALT.encode("utf-8") # return bytes
+    return SALT # return hex string
 
 def write_salt(SALT):
 
     # write SALT file
     os.makedirs(os.path.dirname(SALT_PATH),exist_ok=True)
     with open(SALT_PATH,"w+") as file: # create a file
-        file.write(SALT.decode("utf-8")) # writes a string
-
-### SALT ###
+        file.write(SALT) # writes a hex string
